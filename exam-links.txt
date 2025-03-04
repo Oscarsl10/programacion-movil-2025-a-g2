@@ -1,0 +1,8 @@
+Link tablero en Trello: https://trello.com/invite/b/67c6fb3ae439bf684049abcc/ATTI4d64ffeb1c6b93a14a1efb6cdf668a9877F86EAA/aplicacion-movil-para-la-gestion-y-control-de-vuelos 
+
+Enlace Figma diseño HU3: https://www.figma.com/design/ERM7Yy5Nipx51kbb5zkOls/Layout-prototipo?node-id=0-1&t=e8oDLorcaZOLJoMy-1
+
+Enlace repositorio: https://github.com/Oscarsl10/programacion-movil-2025-a-g2.git
+
+
+Estudiante: Oscar Guillermo Sierra Lozano.
