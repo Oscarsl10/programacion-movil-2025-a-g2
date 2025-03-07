@@ -139,5 +139,5 @@ actualizar productos, monitorear pedidos y administrar la cuenta del usuario adm
 
 ## Enlaces Figma
 
-[Mockup CaffeNet](https://www.figma.com/design/7Ak09p3h9cg9X7xJf4jvKo/Mockup-CaffeNet?t=VukWATE3uvi1G2Id-1)
-[Layout CaffeNet](https://www.figma.com/design/jNQABoM7GpAhZYXnOpat5E/Layout-CaffeNet?t=VukWATE3uvi1G2Id-1)
+- [Mockup CaffeNet](https://www.figma.com/design/7Ak09p3h9cg9X7xJf4jvKo/Mockup-CaffeNet?t=VukWATE3uvi1G2Id-1)
+- [Layout CaffeNet](https://www.figma.com/design/jNQABoM7GpAhZYXnOpat5E/Layout-CaffeNet?t=VukWATE3uvi1G2Id-1)
