@@ -1,0 +1,7 @@
+{
+  "name": "persona-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
