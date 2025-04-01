@@ -1,0 +1,45 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Gestión de Personal Médico</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <form [formGroup]="form">
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input formControlName="nombre"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Apellido</ion-label>
+        <ion-input formControlName="apellido"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Edad</ion-label>
+        <ion-input type="number" formControlName="edad"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating">Correo Electrónico</ion-label>
+        <ion-input type="email" formControlName="correo"></ion-input>
+      </ion-item>
+
+      <ng-container *ngFor="let field of additionalFields">
+        <ion-item>
+          <ion-label position="floating">{{ field.label }}</ion-label>
+          <ion-input [type]="field.type" [formControlName]="field.name"></ion-input>
+        </ion-item>
+      </ng-container>
+
+      <div class="buttons">
+        <ion-button (click)="onSubmit()">Agregar</ion-button>
+        <ion-button color="warning" (click)="onModify()">Modificar</ion-button>
+        <ion-button color="danger" (click)="onDelete()">Eliminar</ion-button>
+        <ion-button color="secondary" (click)="onConsult()">Consultar</ion-button>
+      </div>
+    </form>
+
+    <!-- Mostrar los valores del formulario -->
+    <div class="form-values">
+      <h3>Información del formulario:</h3>
+      <pre>{{ form.value | json }}</pre>
+    </div>
+  </ion-card-content>
+</ion-card>
