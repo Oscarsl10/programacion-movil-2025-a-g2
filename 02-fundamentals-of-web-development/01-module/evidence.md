@@ -26,9 +26,11 @@
 
 - Explicar cómo la nube beneficia al desarrollo web.
 
+
 ## Lo que aprendí
 
 En este módulo comprendí los conceptos fundamentales del desarrollo web, incluyendo cómo funciona Internet, el papel de los navegadores y servidores, y la diferencia entre frontend y backend. Me dio una visión general del ecosistema web y me ayudó a entender cómo encajan todas las piezas.
+
 
 ## Evidencia 
 ![Evidencia](img/01-module_Evidencie.png)
