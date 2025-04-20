@@ -1,7 +1,0 @@
-{
-  "name": "app-movil",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}
