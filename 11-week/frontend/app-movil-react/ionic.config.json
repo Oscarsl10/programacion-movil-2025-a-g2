@@ -1,0 +1,7 @@
+{
+  "name": "app-movil-react",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "app-movil-vue",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
