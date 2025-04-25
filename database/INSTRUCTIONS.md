@@ -49,8 +49,6 @@ docker-compose up -d --build
 
 
 ## Estructura de la Base de Datos
-- **Admin**: Contiene la información de los administradores registrados.
-- **Usuarios**: Contiene la información de los usuarios registrados.
 - **Productos**: Contiene la información de los productos disponibles.
 - **Pedidos**: Contiene la información de los pedidos realizados por los usuarios.
 - **Pago**: Contiene los pagos registrados.

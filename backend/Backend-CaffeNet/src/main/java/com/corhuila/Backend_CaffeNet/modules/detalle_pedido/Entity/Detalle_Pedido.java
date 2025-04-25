@@ -3,7 +3,6 @@ package com.corhuila.Backend_CaffeNet.modules.detalle_pedido.Entity;
 import com.corhuila.Backend_CaffeNet.common.base.ABaseEntity;
 import com.corhuila.Backend_CaffeNet.modules.pedido.Entity.Pedido;
 import com.corhuila.Backend_CaffeNet.modules.producto.Entity.Producto;
-import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,10 +19,6 @@ public class Detalle_Pedido extends ABaseEntity {
     @ManyToOne
     @JoinColumn(name = "producto_id", nullable = false) // Clave foránea
     private Producto producto;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users users;
 
     public Double getSubtotal() {
         return subtotal = calcularSubtotal();
@@ -49,13 +44,6 @@ public class Detalle_Pedido extends ABaseEntity {
         this.producto = producto;
     }
 
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
-    }
 
 
     public double calcularSubtotal() {

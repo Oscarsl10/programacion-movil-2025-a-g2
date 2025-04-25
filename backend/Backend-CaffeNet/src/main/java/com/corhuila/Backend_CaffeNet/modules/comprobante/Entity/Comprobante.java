@@ -2,7 +2,6 @@ package com.corhuila.Backend_CaffeNet.modules.comprobante.Entity;
 
 import com.corhuila.Backend_CaffeNet.common.base.ABaseEntity;
 import com.corhuila.Backend_CaffeNet.modules.pedido.Entity.Pedido;
-import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -19,9 +18,6 @@ public class Comprobante extends ABaseEntity {
     @JoinColumn(name = "pedido_id", nullable = false)
     private Pedido pedido;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users users;
 
     public Date getFecha_Emision() {
         return fecha_Emision;
@@ -37,13 +33,5 @@ public class Comprobante extends ABaseEntity {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
     }
 }

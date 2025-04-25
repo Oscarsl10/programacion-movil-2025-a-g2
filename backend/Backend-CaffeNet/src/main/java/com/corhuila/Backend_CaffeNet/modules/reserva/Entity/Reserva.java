@@ -1,7 +1,6 @@
 package com.corhuila.Backend_CaffeNet.modules.reserva.Entity;
 
 import com.corhuila.Backend_CaffeNet.common.base.ABaseEntity;
-import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -23,10 +22,6 @@ public class Reserva extends ABaseEntity {
 
     @Column(name = "estado")
     private String estado;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Users users;
 
 
     public Date getFecha_inicio() {
@@ -51,14 +46,6 @@ public class Reserva extends ABaseEntity {
 
     public void setEstado(String estado) {
         this.estado = estado;
-    }
-
-    public Users getUsers() {
-        return users;
-    }
-
-    public void setUsers(Users users) {
-        this.users = users;
     }
 
     public Date getFecha_fin() {
