@@ -3,6 +3,7 @@ package com.corhuila.Backend_CaffeNet.modules.admin.Controller;
 import com.corhuila.Backend_CaffeNet.modules.admin.Entity.Admin;
 import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
 import com.corhuila.Backend_CaffeNet.modules.user.IRepository.IUsersRepository;
+import com.corhuila.Backend_CaffeNet.modules.admin.request.LoginAdminRequest;
 import com.corhuila.Backend_CaffeNet.modules.admin.Service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,11 @@ public class AdminRestController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("ADMIN_EMAIL");
         }
+    }
+
+    @PostMapping("/loginAdmin")
+    public Boolean loginAdmin(@RequestBody LoginAdminRequest loginAdminRequest){
+        return adminService.loginAdmin(loginAdminRequest);
     }
 
     @GetMapping("/getAdmin/{email}")

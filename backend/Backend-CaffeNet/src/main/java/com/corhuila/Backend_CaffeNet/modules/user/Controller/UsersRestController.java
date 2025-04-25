@@ -4,11 +4,13 @@ import com.corhuila.Backend_CaffeNet.modules.admin.Entity.Admin;
 import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
 import com.corhuila.Backend_CaffeNet.modules.admin.IRepository.IAdminRepository;
 import com.corhuila.Backend_CaffeNet.modules.user.Service.UsersService;
+import com.corhuila.Backend_CaffeNet.modules.user.requests.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,6 +46,11 @@ public class UsersRestController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("USER_EMAIL");
         }
+    }
+
+    @PostMapping("/loginUser")
+    public Boolean loginUser(@RequestBody LoginRequest loginRequest){
+        return usersService.loginUser(loginRequest);
     }
 
     @GetMapping("/getUser/{email}")
@@ -91,5 +98,19 @@ public class UsersRestController {
 
         Users usuarioActualizado = usersService.save(userActual);
         return ResponseEntity.ok(usuarioActualizado);
+    }
+
+    // Endpoint para recuperar la contraseña
+    @PostMapping("/recuperar-contrasenia")
+    public ResponseEntity<Map<String, String>> recuperarContrasenia(@RequestParam String email) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            usersService.recuperarContrasenia(email);
+            response.put("message", "Se ha enviado una nueva contraseña a tu correo.");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }
