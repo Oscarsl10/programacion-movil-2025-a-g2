@@ -2,6 +2,7 @@ package com.corhuila.Backend_CaffeNet.modules.admin.Service;
 
 import com.corhuila.Backend_CaffeNet.modules.admin.Entity.Admin;
 import com.corhuila.Backend_CaffeNet.modules.admin.IRepository.IAdminRepository;
+import com.corhuila.Backend_CaffeNet.modules.admin.request.LoginAdminRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AdminService {
@@ -46,6 +48,21 @@ public class AdminService {
         }
     }
 
+    public Boolean loginAdmin(LoginAdminRequest loginAdminRequest){
+        Optional<Admin> admin = adminRepository.findById(loginAdminRequest.getUserId());
+
+        if (admin.isEmpty()){
+            return false;
+        }
+
+        Admin admin1 = admin.get();
+
+        if (!admin1.getPassword().equals(hashContrasenia(loginAdminRequest.getPassword()))){
+            return false;
+        }
+
+        return true;
+    }
 
     @Transactional
     public Admin save(Admin admin){
