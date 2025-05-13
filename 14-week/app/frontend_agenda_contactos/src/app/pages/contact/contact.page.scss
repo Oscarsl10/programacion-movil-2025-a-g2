@@ -1,0 +1,91 @@
+:host {
+    display: block;
+    background-color: var(--ion-background-color);
+    color: var(--ion-text-color);
+    padding: 16px;
+}
+
+/* Estilos del formulario */
+form {
+    margin-bottom: 24px;
+
+    ion-item {
+        margin-bottom: 12px;
+        border-radius: 8px;
+        --highlight-height: 2px;
+        --border-radius: 8px;
+        --background: var(--ion-color-light);
+    }
+
+    ion-button {
+        margin-top: 12px;
+        --border-radius: 12px;
+        font-weight: 500;
+        font-size: 16px;
+        height: 44px;
+    }
+}
+
+/* Lista de contactos */
+ion-list {
+    ion-item {
+        margin-bottom: 10px;
+        border-radius: 10px;
+        --background: var(--ion-color-light-shade);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+
+        &:hover {
+            transform: scale(1.01);
+        }
+
+        ion-label h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ion-color-primary);
+        }
+
+        ion-label p {
+            font-size: 14px;
+            color: var(--ion-color-medium);
+        }
+
+        ion-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+        }
+
+        ion-button {
+            --border-radius: 10px;
+            --padding-start: 12px;
+            --padding-end: 12px;
+            font-size: 14px;
+            height: 36px;
+
+            ion-icon {
+                font-size: 18px;
+            }
+        }
+
+        ion-button[color="primary"] {
+            --background: var(--ion-color-primary);
+            --color: white;
+        }
+
+        ion-button[color="danger"] {
+            --background: var(--ion-color-danger);
+            --color: white;
+        }
+    }
+}
+
+/* Mensaje de no contactos */
+ion-item[ng-reflect-ng-if="true"] {
+    text-align: center;
+    font-style: italic;
+    color: var(--ion-color-medium);
+    margin-top: 24px;
+    background: transparent;
+    box-shadow: none;
+}

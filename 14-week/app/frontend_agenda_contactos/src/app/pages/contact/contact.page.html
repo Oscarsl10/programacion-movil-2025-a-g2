@@ -1,0 +1,44 @@
+<ion-content class="ion-padding">
+  <form (ngSubmit)="contact.id ? updateContact() : save()">
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input [(ngModel)]="contact.name" name="name" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Teléfono</ion-label>
+      <ion-input [(ngModel)]="contact.phone" name="phone" required></ion-input>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" [disabled]="!contact.name || !contact.phone">
+      {{ contact.id ? 'Actualizar Contacto' : 'Guardar Contacto' }}
+    </ion-button>
+  </form>
+
+  <!-- Lista de contactos -->
+  <ion-list *ngIf="contacts.length > 0">
+    <ion-item *ngFor="let c of contacts">
+      <ion-label>
+        <h2>{{ c.name }}</h2>
+        <p>{{ c.phone }}</p>
+      </ion-label>
+
+      <!-- Botones de editar y eliminar -->
+      <ion-buttons slot="end">
+        <ion-button fill="outline" color="primary" size="small" (click)="editContact(c)">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Editar
+        </ion-button>
+        <ion-button fill="outline" color="danger" size="small" (click)="deleteContact(c.id)">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Eliminar
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <!-- Si no hay contactos -->
+  <ion-item *ngIf="contacts.length === 0">
+    <ion-label>No hay contactos disponibles.</ion-label>
+  </ion-item>
+</ion-content>
