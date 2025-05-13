@@ -1,0 +1,11 @@
+<ion-list>
+  <ion-radio-group>
+    <ion-list-header>
+      <ion-label>Selecciona una mesa</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let table of availableTables">
+      <ion-label>Mesa {{ table }}</ion-label>
+      <ion-radio slot="start" [value]="table" (ionSelect)="selectTable(table)"></ion-radio>
+    </ion-item>
+  </ion-radio-group>
+</ion-list>

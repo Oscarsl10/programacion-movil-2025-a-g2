@@ -1,0 +1,14 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Reservar Mesa</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <app-date-time (dateTimeSelected)="updateDateTime($event)"></app-date-time>
+  <app-form-customer (customerData)="updateCustomer($event)"></app-form-customer>
+  <app-table-selector [availableTables]="mesasDisponibles" (tableSelected)="updateTable($event)"></app-table-selector>
+
+  <ion-button expand="block" (click)="guardarReserva()">Confirmar Reserva</ion-button>
+</ion-content>
+
