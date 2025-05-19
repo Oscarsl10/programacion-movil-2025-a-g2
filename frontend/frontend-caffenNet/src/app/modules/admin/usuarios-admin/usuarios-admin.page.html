@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Administrar Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-card *ngIf="usuarioActualizado.email">
+    <ion-card-header>
+      <ion-card-title>Editar Usuario</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Nombre Completo</ion-label>
+        <ion-input [(ngModel)]="usuarioActualizado.full_name" type="text"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Teléfono</ion-label>
+        <ion-input [(ngModel)]="usuarioActualizado.telefono" type="tel"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" color="success" (click)="actualizarUsuario()">Guardar Cambios</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list>
+    <ion-card *ngFor="let user of usuarios">
+      <ion-card-header>
+        <ion-card-title>{{ user.full_name }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Teléfono:</strong> {{ user.telefono || 'No registrado' }}</p>
+        <ion-button size="small" color="primary" (click)="usuarioActualizado = user">
+          Editar
+        </ion-button>
+        <ion-button size="small" color="warning" (click)="recuperarContrasenia(user.email)">
+          Recuperar Contraseña
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </ion-list>
+
+</ion-content>

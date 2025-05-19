@@ -1,0 +1,300 @@
+// Variables (paleta de colores)
+$primary-color: #1a1a1a;
+$secondary-color: #303030;
+$accent-color: #c6a47e;
+$text-color: #ffffff;
+$text-secondary: #a0a0a0;
+$danger-color: #eb445a;
+$border-radius: 16px;
+$padding: 16px;
+
+:host {
+  --ion-background-color: #{$primary-color};
+  --ion-text-color: #{$text-color};
+  --ion-color-primary: #{$accent-color};
+  --ion-color-primary-contrast: #000000;
+  --ion-color-danger: #{$danger-color};
+}
+
+// Header
+ion-header {
+  ion-toolbar {
+    --background: #{$primary-color};
+    --color: #{$text-color};
+    --border-style: none;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+  }
+  
+  ion-title {
+    font-size: 22px;
+    font-weight: 600;
+  }
+  
+  ion-buttons {
+    ion-button {
+      --color: #{$accent-color};
+    }
+  }
+}
+
+// Content
+ion-content {
+  --background: #{$primary-color};
+  --padding-top: 20px;
+  --padding-bottom: 20px;
+}
+
+// Search
+.search-container {
+  margin-bottom: 20px;
+  
+  ion-searchbar {
+    --background: #{$secondary-color};
+    --color: #{$text-color};
+    --placeholder-color: #{$text-secondary};
+    --icon-color: #{$accent-color};
+    --border-radius: 12px;
+    --box-shadow: none;
+    padding: 0;
+  }
+}
+
+// User Cards
+.users-container {
+  margin-bottom: 24px;
+}
+
+.user-card {
+  background-color: $secondary-color;
+  border-radius: $border-radius;
+  margin-bottom: 16px;
+  box-shadow: none;
+  overflow: hidden;
+  
+  --background: #{$secondary-color};
+  --color: #{$text-color};
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
+  ion-card-header {
+    padding: 16px 16px 0;
+    
+    .user-header {
+      display: flex;
+      align-items: center;
+      
+      .user-avatar {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 16px;
+        
+        ion-icon {
+          font-size: 40px;
+          color: $accent-color;
+        }
+      }
+      
+      .user-info {
+        flex: 1;
+        
+        ion-card-title {
+          font-size: 18px;
+          font-weight: 600;
+          margin: 0 0 4px 0;
+          color: $text-color;
+        }
+        
+        ion-card-subtitle {
+          font-size: 14px;
+          margin: 0;
+          color: $text-secondary;
+        }
+      }
+    }
+  }
+  
+  ion-card-content {
+    padding: 16px;
+    
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 16px;
+      
+      .detail-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 12px;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .detail-icon {
+          background-color: rgba(0, 0, 0, 0.2);
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 16px;
+          
+          ion-icon {
+            font-size: 16px;
+            color: $accent-color;
+          }
+        }
+        
+        .detail-value {
+          font-size: 14px;
+          color: $text-secondary;
+        }
+      }
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 16px;
+      
+      ion-button {
+        flex: 1;
+        margin: 0 4px;
+        
+        &:first-child {
+          margin-left: 0;
+          --color: #{$accent-color};
+        }
+        
+        &:last-child {
+          margin-right: 0;
+          --color: #{$danger-color};
+        }
+        
+        ion-icon {
+          margin-right: 4px;
+        }
+      }
+    }
+  }
+}
+
+// Form Container
+.form-container {
+  margin-top: 16px;
+}
+
+// Edit Form
+.edit-form {
+  background-color: $secondary-color;
+  border-radius: $border-radius;
+  
+  --background: #{$secondary-color};
+  --color: #{$text-color};
+  
+  ion-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    ion-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: $text-color;
+      margin: 0;
+    }
+    
+    .close-button {
+      --color: #{$text-secondary};
+      --padding-start: 4px;
+      --padding-end: 4px;
+      margin: 0;
+      
+      &:hover {
+        --color: #{$text-color};
+      }
+    }
+  }
+  
+  ion-card-content {
+    padding: 16px;
+    
+    ion-list {
+      background: transparent;
+      padding: 0;
+      margin-bottom: 24px;
+      
+      ion-item {
+        --background: transparent;
+        --padding-start: 0;
+        --inner-padding-end: 0;
+        --border-color: rgba(255, 255, 255, 0.1);
+        --highlight-color-focused: #{$accent-color};
+        margin-bottom: 16px;
+        
+        ion-label {
+          --color: #{$text-secondary};
+          font-size: 14px;
+          margin-bottom: 8px;
+        }
+        
+        ion-input {
+          --color: #{$text-color};
+          --placeholder-color: #{$text-secondary};
+          font-size: 16px;
+          --padding-start: 0;
+          
+          &:disabled {
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+    
+    .form-actions {
+      ion-button {
+        --background: #{$accent-color};
+        --color: #000000;
+        --border-radius: 12px;
+        --box-shadow: none;
+        height: 48px;
+        font-weight: 600;
+        text-transform: none;
+        
+        ion-icon {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (min-width: 768px) {
+  .users-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+    
+    .user-card {
+      margin-bottom: 0;
+    }
+  }
+  
+  .form-container {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

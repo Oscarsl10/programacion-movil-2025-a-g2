@@ -1,0 +1,114 @@
+ion-content {
+    --background: #1e1221;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .back-button {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    
+    ion-icon {
+      color: white;
+      font-size: 24px;
+    }
+  }
+  
+  .login-title {
+    margin-bottom: 40px;
+    
+    h1 {
+      color: white;
+      font-size: 24px;
+      font-weight: 500;
+      text-align: center;
+      margin: 0;
+    }
+  }
+  
+  .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 30px;
+    
+    .form-field {
+      width: 100%;
+      
+      input {
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.25);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 15px;
+        font-size: 16px;
+        outline: none;
+        
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.7);
+        }
+      }
+    }
+    
+    .login-button {
+      margin-top: 16px;
+      
+      ion-button {
+        --background: #9d2c4e;
+        --background-activated: #7a2239;
+        --border-radius: 8px;
+        --color: white;
+        --box-shadow: none;
+        height: 50px;
+        font-size: 16px;
+        font-weight: normal;
+        text-transform: none;
+      }
+    }
+  }
+  
+  .login-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    
+    p {
+      color: white;
+      font-size: 14px;
+      margin: 8px 0;
+      text-align: center;
+    }
+    
+    .link {
+      color: white;
+      text-decoration: underline;
+    }
+    
+    .register-option {
+      margin-bottom: 8px;
+    }
+    
+    .forgot-option {
+      margin-bottom: 20px;
+    }
+    
+    .divider {
+      width: 70%;
+      height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 20px 0;
+    }
+    
+    .guest-option {
+      margin-top: 8px;
+    }
+  }

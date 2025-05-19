@@ -1,0 +1,53 @@
+<ion-content [fullscreen]="true">
+  <div class="login-container">
+    <div class="back-button">
+      <ion-icon name="chevron-back"></ion-icon>
+    </div>
+
+    <div class="login-title">
+      <h1>Ingreso</h1>
+    </div>
+    <div *ngIf="errors.length > 0" class="alert alert-danger" role="alert">
+      <ul class="mb-0">
+        <li *ngFor="let error of errors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">
+      {{ successMessage }}
+    </div>
+
+    <div class="login-form">
+      <div class="form-field">
+        <input type="email" placeholder="Correo:" [(ngModel)]="userId">
+      </div>
+
+      <div class="form-field">
+        <input type="password" placeholder="Contraseña:" [(ngModel)]="password">
+      </div>
+
+      <div class="login-button">
+        <ion-button expand="block" (click)="login()">
+          Iniciar sesión
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="login-options">
+
+
+      <div class="forgot-option" (click)="forgotPassword()">
+        <p>¿Olvidaste tu contraseña?</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="guest-option">
+        <div class="login-option-user" [routerLink]="['/login']">
+          <p>Continuar como <span class="link">usuario</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
