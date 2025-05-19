@@ -1,0 +1,62 @@
+<ion-content [fullscreen]="true">
+  <div class="login-container">
+    <div class="back-button">
+      <ion-icon name="chevron-back"></ion-icon>
+    </div>
+
+    <div class="login-title">
+      <h1>Ingreso</h1>
+    </div>
+
+
+    <!-- Mensaje de éxito -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">
+      {{ successMessage }}
+    </div>
+    <!-- Errores -->
+    <div *ngIf="errors.length > 0">
+      <div *ngFor="let error of errors" class="alert alert-danger" role="alert">
+        {{ error }}
+      </div>
+    </div>
+
+
+    <div class="login-form">
+      <div class="form-field">
+        <input type="email" placeholder="Correo:" [(ngModel)]="userId">
+      </div>
+
+      <div class="form-field">
+        <input type="password" placeholder="Contraseña:" [(ngModel)]="password">
+      </div>
+
+      <div class="login-button">
+        <ion-button expand="block" (click)="login()">
+          Iniciar sesión
+        </ion-button>
+      </div>
+    </div>
+
+    <div class="login-options">
+      <div class="register-option" [routerLink]="['/register']">
+        <p>¿Aún no tienes cuenta? <span class="link">Regístrate</span></p>
+      </div>
+
+      <div class="forgot-option" (click)="forgotPassword()">
+        <p>¿Olvidaste tu contraseña?</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="guest-option">
+        <p>Continuar como <span class="link">Invitado</span></p>
+      </div>
+
+      <div class="login-option">
+        <div class="login-option-admin" [routerLink]="['/admin-login']">
+          <p>Continuar como <span class="link">Administrador</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

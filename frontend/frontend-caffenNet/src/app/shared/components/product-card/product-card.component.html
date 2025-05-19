@@ -1,0 +1,11 @@
+<ion-card>
+  <img [src]="producto.imagen" alt="{{ producto.nombre }}" />
+  <ion-card-header>
+    <ion-card-title>{{ producto.nombre }}</ion-card-title>
+  </ion-card-header>
+  
+  <div class="price-container">
+    <ion-card-subtitle>{{ producto.precio | currency:'COP' }}</ion-card-subtitle>
+    <ion-button fill="solid" color="warning" shape="round" size="small" (click)="agregarAlCarrito()">+</ion-button>
+  </div>
+</ion-card>

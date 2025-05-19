@@ -1,0 +1,121 @@
+/* Fondo general y padding */
+ion-content {
+    --background: linear-gradient(to bottom, #1e172d, #2d223c);
+    --padding-bottom: 70px;
+  }
+  
+  /* Toolbar mejorado */
+  ion-toolbar {
+    --background: #1e172d;
+    --color: #f4e1c1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  
+  ion-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  
+  /* Contenedor elegante para el encabezado */
+  .header-container {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .header-container h2 {
+    color: #e0b354;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .header-container p {
+    font-size: 1.1rem;
+    color: #f4e1c1;
+    font-weight: 400;
+  }
+  
+  /* Estilos para los botones */
+  ion-button {
+    --background: #7a2239;
+    --color: #1e172d;
+    border-radius: 12px;
+    font-weight: bold;
+    margin-top: 15px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Botón con icono de productos */
+  ion-button[color="primary"] {
+    --background: #7a2239; /* Verde para "Administrar Productos" */
+    --color: white;
+  }
+  
+  ion-button[color="secondary"] {
+    --background: #7a2239; /* Amarillo para "Configuración" */
+    --color: white;
+  }
+  
+  ion-button[color="danger"] {
+    --background: #7a2239; /* Rojo para "Administrar Usuarios" */
+    --color: white;
+  }
+  
+  /* Efectos en los botones */
+  ion-button:hover {
+    --background: #7a2239; /* Color más oscuro en hover */
+    --box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.15); /* Sombra al pasar el mouse */
+    transition: 0.3s ease;
+  }
+  
+  ion-button:active {
+    transform: scale(0.98); /* Efecto al hacer clic */
+    transition: transform 0.1s;
+  }
+  
+  /* Iconos en los botones */
+  ion-icon {
+    margin-right: 10px;
+    font-size: 1.3rem;
+  }
+  
+  /* Estilo para los botones */
+  .product-card {
+    background: #3b2d4a;
+    color: #f4e1c1;
+    border-radius: 18px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover {
+    transform: scale(1.01);
+  }
+  
+  ion-card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+  }
+  
+  /* Responsive */
+  @media screen and (max-width: 480px) {
+    .header-container h2 {
+      font-size: 1.5rem;
+    }
+  
+    ion-button {
+      font-size: 1rem;
+      padding: 12px 10px;
+    }
+  
+    .header-container p {
+      font-size: 0.9rem;
+    }
+  }
+  

@@ -1,0 +1,94 @@
+/* Fondo general y padding */
+ion-content {
+  --background: linear-gradient(to bottom, #1e172d, #2d223c);
+  --padding-bottom: 70px;
+}
+
+/* Toolbar mejorado */
+ion-toolbar {
+  --background: #1e172d;
+  --color: #f4e1c1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+ion-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Contenedor elegante para el formulario */
+.form-container {
+  background-color: #2a1d3a;
+  padding: 25px;
+  margin: 20px 0;
+  border-radius: 20px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* Título del formulario y lista */
+.form-title, .list-title {
+  color: #e0b354;
+  font-size: 1.3rem;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* Inputs más estilizados */
+.custom-item {
+  --background: #3b2d4a;
+  --color: #f4e1c1;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  padding-left: 8px;
+}
+
+/* Estilo de las tarjetas de productos */
+.product-card {
+  background: #3b2d4a;
+  color: #f4e1c1;
+  border-radius: 18px;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.4);
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: scale(1.01);
+}
+
+ion-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Botones */
+ion-button {
+  --background: #e0b354;
+  --color: #1e172d;
+  border-radius: 12px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+ion-button[color="danger"] {
+  --background: #ff4d4d;
+  --color: white;
+}
+
+/* Responsive */
+@media screen and (max-width: 480px) {
+  .form-container {
+    padding: 15px;
+  }
+
+  .form-title, .list-title {
+    font-size: 1.1rem;
+  }
+
+  ion-card-title {
+    font-size: 1rem;
+  }
+}
