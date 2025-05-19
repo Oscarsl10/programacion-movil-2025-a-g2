@@ -1,0 +1,64 @@
+ion-content {
+  --background: #1e1221;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  
+  .content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+  }
+  
+  .icon-container {
+    background-color: #252028;
+    width: 80px;
+    height: 80px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    
+    img {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  .app-title {
+    margin-bottom: 40px;
+    
+    h1 {
+      color: #f4f4f4;
+      text-align: center;
+      font-size: 28px;
+      font-family: serif;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+  }
+  
+  .buttons-container {
+    width: 100%;
+    max-width: 300px;
+    
+    ion-button {
+      --background: #9d2c4e;
+      --background-activated: #7a2239;
+      --border-radius: 6px;
+      --box-shadow: none;
+      height: 40px;
+      text-transform: none;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      margin-bottom: 10px;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

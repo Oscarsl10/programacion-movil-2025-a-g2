@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Administrar Productos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="form-container">
+    <h2 class="form-title">
+      {{ productoEnEdicion ? 'Editar Producto' : 'Agregar Nuevo Producto' }}
+    </h2>
+
+    <ion-item class="custom-item">
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input [(ngModel)]="nuevoProducto.nombre"></ion-input>
+    </ion-item>
+
+    <ion-item class="custom-item">
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea [(ngModel)]="nuevoProducto.descripcion"></ion-textarea>
+    </ion-item>
+
+    <ion-item class="custom-item">
+      <ion-label position="floating">Precio</ion-label>
+      <ion-input type="number" [(ngModel)]="nuevoProducto.precio"></ion-input>
+    </ion-item>
+
+    <ion-item class="custom-item">
+      <ion-label position="floating">Stock</ion-label>
+      <ion-input type="number" [(ngModel)]="nuevoProducto.stock"></ion-input>
+    </ion-item>
+
+    <ion-button expand="block" (click)="productoEnEdicion ? actualizarProducto() : guardarProducto()">
+      {{ productoEnEdicion ? 'Actualizar Producto' : 'Guardar Producto' }}
+    </ion-button>
+  </div>
+
+  <ion-button expand="block" fill="outline" (click)="toggleInactivos()">
+    {{ mostrarInactivos ? 'Ver Activos' : 'Ver Inactivos' }}
+  </ion-button>
+
+  <h2 class="list-title">Lista de Productos</h2>
+
+  <ion-card *ngFor="let producto of productos" class="product-card">
+    <ion-card-header>
+      <ion-card-title>{{ producto.nombre }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>{{ producto.descripcion }}</p>
+      <p><strong>Precio:</strong> {{ producto.precio | currency:'COP' }}</p>
+      <p><strong>Stock:</strong> {{ producto.stock }}</p>
+      <p><strong>Estado:</strong> {{ producto.estado }}</p>
+
+      <ion-button color="primary" (click)="editarProducto(producto)" *ngIf="producto.status">Editar</ion-button>
+      <ion-button color="danger" (click)="eliminarProducto(producto.id)" *ngIf="producto.status">Eliminar</ion-button>
+      <ion-button color="success" fill="outline" (click)="reactivarProducto(producto)" *ngIf="!producto.status">
+        Reactivar
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<app-bottom-bar></app-bottom-bar>

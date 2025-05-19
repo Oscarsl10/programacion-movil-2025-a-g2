@@ -1,0 +1,78 @@
+ion-content {
+    --background: #1e172d;
+  }
+  
+  ion-toolbar {
+    --background: #1e172d;
+    --color: #f4e1c1;
+  }
+  
+  ion-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  ion-searchbar {
+    --background: #2d223c;
+    --color: #f4e1c1;
+    --placeholder-color: #b8a8c6;
+    margin: 10px;
+    border-radius: 10px;
+  }
+  
+  ion-card {
+    background: #2d223c;
+    color: #f4e1c1;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  ion-card-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  ion-card-subtitle {
+    color: #e0b354;
+  }
+  
+  .price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+
+  :host {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white; /* Ajusta según el diseño */
+    z-index: 1000;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  ion-content {
+    --padding-bottom: 70px; /* Ajusta según la altura de la barra */
+  }
+  
+  app-bottom-bar {
+    position: relative; /* En lugar de fixed */
+    bottom: 0;
+    width: 100%;
+  }
+  
+  ion-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0px -3px 10px rgba(0, 0, 0, 0.1);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    overflow: hidden;
+    z-index: 1000;
+  }
+  
+  

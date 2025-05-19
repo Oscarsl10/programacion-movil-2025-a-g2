@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Menú Principal</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <ion-icon name="person-circle-outline" style="font-size: 40px;"></ion-icon>
+      </ion-button>       
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar placeholder="Busca tu café favorito..."></ion-searchbar>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let cafe of cafes">
+        <app-product-card 
+          [producto]="cafe" 
+          (addToCart)="agregarAlCarrito($event)">
+        </app-product-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+
+<app-bottom-bar></app-bottom-bar>
+
