@@ -1,21 +1,27 @@
 package com.corhuila.Backend_CaffeNet.modules.detalle_pedido.Entity;
 
 import com.corhuila.Backend_CaffeNet.common.base.ABaseEntity;
-import com.corhuila.Backend_CaffeNet.modules.pedido.Entity.Pedido;
+import com.corhuila.Backend_CaffeNet.modules.car_buys.Entity.CarBuy;
 import com.corhuila.Backend_CaffeNet.modules.producto.Entity.Producto;
 import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "detalle_pedido")
 public class Detalle_Pedido extends ABaseEntity {
 
-    @Column(name = "subtotal")
-    private Double subtotal;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "America/Bogota")
+    @Column(name = "fecha_emision")
+    private Date fecha_emision;
 
     @ManyToOne
-    @JoinColumn(name = "pedido_id", nullable = false) // Clave foránea
-    private Pedido pedido;
+    @JoinColumn(name = "car_buy_id", nullable = false)
+    private CarBuy carBuy;
 
     @ManyToOne
     @JoinColumn(name = "producto_id", nullable = false) // Clave foránea
@@ -25,21 +31,6 @@ public class Detalle_Pedido extends ABaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private Users users;
 
-    public Double getSubtotal() {
-        return subtotal = calcularSubtotal();
-    }
-
-    public void setSubtotal(Double subtotal) {
-        this.subtotal = subtotal;
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
 
     public Producto getProducto() {
         return producto;
@@ -57,27 +48,19 @@ public class Detalle_Pedido extends ABaseEntity {
         this.users = users;
     }
 
+    public CarBuy getCarBuy() {
+        return carBuy;
+    }
 
-    public double calcularSubtotal() {
-        if (producto == null) {
-            throw new IllegalStateException("El producto no puede ser nulo.");
-        }
+    public void setCarBuy(CarBuy carBuy) {
+        this.carBuy = carBuy;
+    }
 
-        if (producto.getPrecio() == null) {
-            throw new IllegalStateException("El precio del producto no puede ser nulo.");
-        }
+    public Date getFecha_emision() {
+        return fecha_emision;
+    }
 
-        if (pedido.getCantidad() == null || pedido.getCantidad() <= 0) {
-            throw new IllegalStateException("La cantidad debe ser mayor que cero.");
-        }
-
-        // Cálculo del subtotal
-        double precio = producto.getPrecio();
-        double totalPagar = pedido.getCantidad() * precio;
-
-        // Guardar el subtotal en el atributo
-        this.subtotal = totalPagar;
-
-        return totalPagar;
+    public void setFecha_emision(Date fecha_emision) {
+        this.fecha_emision = fecha_emision;
     }
 }

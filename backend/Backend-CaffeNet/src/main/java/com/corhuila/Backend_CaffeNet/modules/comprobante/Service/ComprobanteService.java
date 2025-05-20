@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ComprobanteService extends ABaseService<Comprobante> implements IComprobanteService {
 
+    @Autowired
+    private IComprobanteRepository comprobanteRepository;
+
     @Override
     protected IBaseRepository<Comprobante, Long> getRepository() {
         return comprobanteRepository;
     }
-
-    @Autowired
-    private IComprobanteRepository comprobanteRepository;
 }

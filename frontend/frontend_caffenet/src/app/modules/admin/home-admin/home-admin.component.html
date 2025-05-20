@@ -1,0 +1,73 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title class="ion-text-center">
+      Panel de Administración
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="admin-home ion-padding">
+  <div class="header-container">
+    <h2>Bienvenido al Panel de Administración</h2>
+    <p>Desde aquí podrás gestionar todos los productos y funciones.</p>
+  </div>
+
+  <div class="admin-buttons-container">
+    <!-- Administrar Productos -->
+    <ion-card class="menu-card" routerLink="/products_admin">
+      <ion-card-content>
+        <div class="card-icon-container">
+          <img src="assets/icon/bag-add-outline.svg" class="custom-icon" alt="Productos" />
+        </div>
+        <div class="card-text">
+          <h3>Administrar Productos</h3>
+          <p>Gestión de inventario y catálogo</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Administrar Usuarios -->
+    <ion-card class="menu-card" routerLink="/usuarios-admin">
+      <ion-card-content>
+        <div class="card-icon-container">
+          <img src="assets/icon/person-circle-outline.svg" class="custom-icon" alt="Perfil" />
+        </div>
+        <div class="card-text">
+          <h3>Administrar Usuarios</h3>
+          <p>Gestión de cuentas y permisos</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Administrar Reservas -->
+    <ion-card class="menu-card" routerLink="/admin-reservations">
+      <ion-card-content>
+        <div class="card-icon-container">
+          <img src="assets/icon/clipboard-outline.svg" class="custom-icon" alt="Reservas" />
+        </div>
+        <div class="card-text">
+          <h3>Administrar Reservas</h3>
+          <p>Control de reservaciones y horarios</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Administrar Pagos de Reservas -->
+    <ion-card class="menu-card" routerLink="/pay-r-admin">
+      <ion-card-content>
+        <div class="card-icon-container">
+          <img src="assets/icon/cash-outline.svg" class="custom-icon" alt="Metod de pago" />
+        </div>
+        <div class="card-text">
+          <h3>Administrar Pagos</h3>
+          <p>Gestión de pagos y facturación</p>
+        </div>
+        <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<app-bottom-bar-admin></app-bottom-bar-admin>

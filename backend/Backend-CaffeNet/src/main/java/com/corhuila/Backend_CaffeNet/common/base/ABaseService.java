@@ -30,7 +30,6 @@ public abstract class ABaseService <T extends ABaseEntity> implements IBaseServi
 
         return op.get();
     }
-
     @Override
     public T save(T entity) throws Exception{
         try {
@@ -42,6 +41,7 @@ public abstract class ABaseService <T extends ABaseEntity> implements IBaseServi
             throw new Exception("Error al guardar la entidad: " + e.getMessage());
         }
     }
+
 
     @Override
     public void update(Long id, T entity) throws Exception {
@@ -75,5 +75,6 @@ public abstract class ABaseService <T extends ABaseEntity> implements IBaseServi
         entityUpdate.setDeletedAt(LocalDateTime.now());
 
         getRepository().save(entityUpdate);
+        getRepository().deleteById(id);
     }
 }

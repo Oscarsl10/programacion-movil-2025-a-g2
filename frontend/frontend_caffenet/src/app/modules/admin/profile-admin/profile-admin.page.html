@@ -1,0 +1,52 @@
+
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-title> Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <ion-item *ngIf="admin" lines="none">
+    <ion-label position="floating">Nombre Completo</ion-label>
+    <ion-input [(ngModel)]="admin.full_name" [readonly]="!modoEdicion" type="text"></ion-input>
+  </ion-item>
+
+  <ion-item *ngIf="admin" lines="none">
+    <ion-label position="floating">Teléfono</ion-label>
+    <ion-input [(ngModel)]="admin.telefono" [readonly]="!modoEdicion" type="text"></ion-input>
+  </ion-item>
+
+  <ion-item *ngIf="admin" lines="none">
+      <ion-label position="floating">Email</ion-label>
+      <ion-input [(ngModel)]="admin.email" name="email" readonly></ion-input>
+    </ion-item>
+
+
+  <ion-item *ngIf="modoEdicion" lines="none">
+    <ion-label position="floating">Contraseña Actual</ion-label>
+    <ion-input [(ngModel)]="oldPassword" type="password"></ion-input>
+  </ion-item>
+
+  <ion-item *ngIf="modoEdicion" lines="none">
+    <ion-label position="floating">Nueva Contraseña</ion-label>
+    <ion-input [(ngModel)]="newPassword" type="password"></ion-input>
+  </ion-item>
+
+  <div *ngIf="errors.length" class="error-messages">
+    <ion-text color="danger">
+      <ul>
+        <li *ngFor="let error of errors">{{ error }}</li>
+      </ul>
+    </ion-text>
+  </div>
+
+  <ion-button *ngIf="!modoEdicion" (click)="activarEdicion()">Editar</ion-button>
+  <ion-button *ngIf="modoEdicion" (click)="guardarCambios()">Guardar Cambios</ion-button>
+  
+  <div class="fixed-logout-button">
+  <ion-button expand="block" color="danger" (click)="cerrarSesion()">Cerrar sesión</ion-button>
+</div>
+</ion-content>
+
+<app-bottom-bar-admin></app-bottom-bar-admin>

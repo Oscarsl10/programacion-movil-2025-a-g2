@@ -1,0 +1,40 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Menú Principal</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" routerLink="/home">
+        <ion-icon name="person-circle-outline" style="font-size: 35px;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-searchbar placeholder="Busca tu café favorito..." (ionInput)="filtrarCafes($event)">
+  </ion-searchbar>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" *ngFor="let cafe of cafesFiltrados">
+        <ion-card>
+          <ion-img *ngIf="cafe.url" [src]="cafe.url" class="product-image">
+          </ion-img>
+
+          <ion-card-header>
+            <ion-card-title>{{ cafe.nombre }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <p>{{ cafe.descripcion }}</p>
+            <div class="price-container">
+              <span>{{ cafe.precio | currency:'COP' }}</span>
+              <span>Stock: {{ cafe.stock }}</span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<app-bottom-bar-guest></app-bottom-bar-guest>

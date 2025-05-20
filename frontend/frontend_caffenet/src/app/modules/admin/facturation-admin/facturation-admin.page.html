@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Panel de Facturación</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="admin-home ion-padding">
+  <div class="header-container">
+    <h2>Bienvenido al Panel de Facturación</h2>
+    <p>Desde aquí podrás gestionar todos los pagos y facturas.</p>
+  </div>
+
+  <!-- Botón para gestionar productos -->
+  <ion-button expand="block" color="primary" routerLink="/pay-r-admin">
+    <ion-icon slot="start" name="cube-outline"></ion-icon>
+    Pago Reservas
+  </ion-button>
+
+  <ion-button expand="block" color="primary" routerLink="/invoice-admin">
+    <ion-icon slot="start" name="cube-outline"></ion-icon>
+    Facturas Reservas
+  </ion-button>
+
+  <ion-button expand="block" color="primary" routerLink="/pay-admin">
+    <ion-icon slot="start" name="cube-outline"></ion-icon>
+    Pagos
+  </ion-button>
+
+  <ion-button expand="block" color="primary" routerLink="/pay-r-admin">
+    <ion-icon slot="start" name="cube-outline"></ion-icon>
+    Facturas Pagos
+  </ion-button>
+
+</ion-content>
+
+<app-bottom-bar-admin></app-bottom-bar-admin>

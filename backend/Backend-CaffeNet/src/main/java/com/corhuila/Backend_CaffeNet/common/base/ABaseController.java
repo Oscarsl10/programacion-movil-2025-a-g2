@@ -40,7 +40,7 @@ public class ABaseController <T extends ABaseEntity, S extends IBaseService<T>> 
         try {
             entity.setCreatedAt(LocalDateTime.now());
             entity.setCreatedBy((long)1);
-            return ResponseEntity.ok(new ApiResponseDto<T>("Datos guardados", service.save(entity), true));
+            return ResponseEntity.ok(new ApiResponseDto<T>("Datos guardados",service.save(entity), true));
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponseDto<T>(e.getMessage(), null, false));
         }

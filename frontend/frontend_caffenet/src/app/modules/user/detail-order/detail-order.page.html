@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar class="toolbar-vino shadow-lg">
+    <ion-title class="titulo-pedido">Detalle del Pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="contenedor-principal ion-padding">
+  <section class="encabezado">
+    <h2>Tu Pedido</h2>
+  </section>
+
+  <section class="seccion-usuario-productos">
+    <!-- Usuario -->
+    <ion-card *ngIf="usuario" class="card-usuario glassy">
+      <ion-card-header>
+        <ion-card-title>Usuario</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Nombre:</strong> {{ usuario.full_name }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Productos en carrito -->
+    <ion-list *ngIf="carrito.length > 0" class="lista-carrito scroll-y">
+      <ion-item *ngFor="let item of carrito" lines="none" class="item-carrito glassy">
+        <ion-label class="ion-text-wrap">
+          <h2>{{ item.producto.nombre }}</h2>
+          <p>Precio unitario: ${{ item.producto.precio }}</p>
+          <p>Cantidad: {{ item.cantidad }}</p>
+          <p>Total: ${{ item.total }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </section>
+
+  <!-- Total & acción -->
+  <ion-card *ngIf="carrito.length > 0" class="card-total glassy">
+    <ion-card-content class="total-content">
+      <h3>Total a pagar: ${{ totalGeneral }}</h3>
+      <ion-button expand="block" color="success" (click)="confirmarPedido()">
+        Confirmar Pedido
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<app-bottom-bar></app-bottom-bar>

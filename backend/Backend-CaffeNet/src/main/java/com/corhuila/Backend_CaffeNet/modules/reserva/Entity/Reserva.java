@@ -1,9 +1,13 @@
 package com.corhuila.Backend_CaffeNet.modules.reserva.Entity;
 
 import com.corhuila.Backend_CaffeNet.common.base.ABaseEntity;
+import com.corhuila.Backend_CaffeNet.modules.mesa.Entity.Mesa;
+import com.corhuila.Backend_CaffeNet.modules.pago_reserva.Entity.PagoReserva;
 import com.corhuila.Backend_CaffeNet.modules.user.Entity.Users;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -11,46 +15,42 @@ import java.util.Date;
 public class Reserva extends ABaseEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_inicio")
-    private Date fecha_inicio;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "America/Bogota")
+    @Column(name = "fecha_inicio", nullable = false)
+    private Date fechaInicio;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "fecha_fin")
-    private Date fecha_fin;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "America/Bogota")
+    @Column(name = "fecha_fin", nullable = false)
+    private Date fechaFin;
 
-    @Column(name = "numero_Personas")
-    private Integer numero_Personas;
+    @Column(name = "numero_personas", nullable = false)
+    private Integer numero_personas;
+
+    @Column(name = "codigo", nullable = false, unique = true)
+    private String codigo;
 
     @Column(name = "estado")
-    private String estado;
+    private String estado = "Disponible";
+
+    @Column(name = "precio")
+    private Double precio;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private Users users;
 
+    @ManyToOne
+    @JoinColumn(name = "mesa_id", nullable = false)
+    private Mesa mesa;
 
-    public Date getFecha_inicio() {
-        return fecha_inicio;
+
+    public Mesa getMesa() {
+        return mesa;
     }
 
-    public void setFecha_inicio(Date fecha_inicio) {
-        this.fecha_inicio = fecha_inicio;
-    }
-
-    public Integer getNumero_Personas() {
-        return numero_Personas;
-    }
-
-    public void setNumero_Personas(Integer numero_Personas) {
-        this.numero_Personas = numero_Personas;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setMesa(Mesa mesa) {
+        this.mesa = mesa;
     }
 
     public Users getUsers() {
@@ -61,11 +61,62 @@ public class Reserva extends ABaseEntity {
         this.users = users;
     }
 
-    public Date getFecha_fin() {
-        return fecha_fin;
+    public Double getPrecio() {
+        return precio = calcularMontoR();
     }
 
-    public void setFecha_fin(Date fecha_fin) {
-        this.fecha_fin = fecha_fin;
+    public void setPrecio(Double precio) {
+        this.precio = precio;
+    }
+
+    public Integer getNumero_personas() {
+        return numero_personas;
+    }
+
+    public void setNumero_personas(Integer numero_personas) {
+        this.numero_personas = numero_personas;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Date getFechaInicio() {
+        return fechaInicio;
+    }
+
+    public void setFechaInicio(Date fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    public Date getFechaFin() {
+        return fechaFin;
+    }
+
+    public void setFechaFin(Date fechaFin) {
+        this.fechaFin = fechaFin;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
+    }
+
+    public Double calcularMontoR() {
+        if (this.getFechaInicio() != null && this.getFechaFin() != null && this.getMesa() != null) {
+            long diferenciaMilisegundos = this.getFechaFin().getTime() - this.getFechaInicio().getTime();
+            double horas = diferenciaMilisegundos / (1000.0 * 60 * 60); // Duración en horas
+            double total = horas * this.getMesa().getPrecio(); // Usa el precio por hora de la mesa
+            return Double.valueOf(total);
+        } else {
+            return 0.0;
+        }
     }
 }
