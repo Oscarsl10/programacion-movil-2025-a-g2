@@ -627,3 +627,178 @@ Servicio con la lógica de negocio para el manejo de usuarios.
 ---
 
 **Nota**: Este módulo también interactúa con `IAdminRepository` para evitar colisión de emails con administradores.
+
+## modulo car_buys
+### Funcionalidad
+este modulo implementa el carrito de productos para los clientes. A continuacion se documentan los archivos principales del modulo.
+
+### Estructura
+- `CarBuy`: Entidad principal con campos como `estado`, `total`, `cantidad`, `producto`.
+- `CarBuyDTO`: DTO con validaciones.
+- `CarBuyRepository`: Interface JPA (extiende `BaseRepository`).
+- `CarBuyServiceImpl`: Lógica de negocio, incluye validaciones de disponibilidad (extiende `BaseServiceImpl`).
+- `CarBuyController`: API pública para reservas (extiende `BaseController`).
+
+### Flujo general
+```
+Cliente HTTP → CarBuyController → CarBuyServiceImpl → CarBuyRepository → BD
+```
+
+## 1. CarbuyController.
+Controlador REST que expone los endpoints relacionados con el carrito.
+### Endpoints disponibles:
+- `delete /api/v1/carbuys/deleteAll`: borrar toda la lista de prodctos del carrito.
+- `POST /api/v1/carbuys/delete/{id}`: eliminar cada pordcuto del carrito por id
+
+## 2. `Carbuy.java`
+Entidad que representa al carrito.
+
+### Atributos:
+
+- `estado`: estado del carrito.
+- `total`: total de los productos en el carrito.
+- `cantidad`: precio de los productos.
+- `producto`: relacion llave foranea con la entidad producto.
+## 3 EstdoCarrito enum
+qui es donde se relaciona los estados en el carrito.
+### valores dados:
+- ACTIVO.
+- COMPRADO.
+- RETIRADO.
+## 4. `ICarBuyRepository.java`
+
+Repositorio JPA para la entidad `CarBuy`. Provee métodos CRUD heredados de la base.
+
+## 5. `ICarBuyService.java`
+
+Clase auxiliar para el manejo de solicitudes de login.
+## 6 CarBuyService:
+implementacion del Servicio con la lógica de negocio para el manejo de los productos en el carrito.
+
+- `void deleteAll()`:al usar el metodo eliminar todos los produdctos del carro.
+- `void deleteById(Long id)`: elimina por id los productos del carrito.
+
+## modulo Mesa.
+### Funcionalidad
+este modulo implementa la mesa  para los clientes. A continuacion se documentan los archivos principales del modulo.
+
+### Estructura
+- `Mesa`: Entidad principal con campos como `numero`, `capacidad`, `ubicacion`, `estado`,`precio`.
+- `CarBuyDTO`: DTO con validaciones.
+- `MesaRepository`: Interface JPA (extiende `BaseRepository`).
+- `MesaServiceImpl`: Lógica de negocio, incluye validaciones de disponibilidad (extiende `BaseServiceImpl`).
+- `MesaController`: API pública para reservas (extiende `BaseController`).
+
+### Flujo general
+```
+Cliente HTTP → MesaController → MesaServiceImpl → MesaRepository → BD
+```
+
+## 1. MesaController.
+Controlador REST que expone los endpoints relacionados con las mesas.
+### Endpoints disponibles:
+- `put /api/v1/mesas/{id}/ocupar`: cuando en reserva se asigna una mesa, se cambia el estado indicando que esa mesa esta ocupada.
+- `put /api/v1/mesas/{id}/liberar`: libera cada mesa que ya se haya pasado del limite por id.
+- `put /api/v1/mesas/liberar-finalizadas`:
+libera todas las mesas cuya fecha_fin ya se haya terminado.
+- `POST /api/v1/mesas/{id}/disponible`:revisa si la mesa esta disponible.
+
+## 2. `Mesas.java`
+Entidad que representa a las mesas.
+
+### Atributos:
+
+- `numero`: numero de cada mesa.
+- `capacidad`: capacidad que tiene la mesa.
+- `ubicacion`:indica en que seccion de la cafeteria se quiere sentar.
+- `estado`: indica si esta disponible o ocupado.
+- `precio`:el valor que tiene al reservar la mesa.
+## 3. `IMesaRepository.java`
+
+Repositorio JPA para la entidad ` Mesa`. Provee métodos CRUD heredados de la base.
+
+## 4. `IMesaService.java`
+implementacion del servicio donde se maneja la logica y los metodos con una extension hacia la base.
+## metodos que se implementaran:
+
+- public void ocuparMesa(Long idMesa);
+- public boolean estaDisponible(Long idMesa);
+- public void liberarMesa(Long idMesa);
+
+## 5. `MesaService.java`
+
+implementacion del Servicio con la lógica de negocio para el manejo de las mesas en la reserva.
+- ` ocuparMesa(Long idMesa)`:metodo para ocupar la mesa al reservarla. 
+- `estaDisponible(Long idMesa)`:Metodo para verficiar la disponibilidad de las mesas.
+- `liberarMesa(Long idMesa)`:Metodo para cambiar el estado de ocupado a disponible cuando la fecha_fin se haya terminado.
+
+
+
+## modulo pago_reserva
+### Funcionalidad
+este modulo implementa el pago de la reserva para los clientes. A continuacion se documentan los archivos principales del modulo.
+### Estructura
+- `PagoReserva`: Entidad principal con campos como `metodo_pago`, `monto`, `reserva`, `users`, y un metodo:`calcularMontoDesdeReserva()`.
+- `CarBuyDTO`: DTO con validaciones.
+- `PagoReservaRepository`: Interface JPA (extiende `BaseRepository`).
+- `PagoReservaServiceImpl`: Lógica de negocio, incluye validaciones de disponibilidad (extiende `BaseServiceImpl`).
+- `PagoReservaController`: API pública para reservas (extiende `BaseController`).
+
+### Flujo general
+```
+Cliente HTTP → PagoReservaController → PagoReservaServiceImpl → PagoReservaRepository → BD
+```
+
+## 1. PagoReservaController.
+Controlador REST que expone los endpoints relacionados con el pago de las reservas.
+### Endpoints disponibles:
+- `POST /api/v1/pago/reserva/add`: peticion de agregar un nuevo pago reserva.
+- `GET /api/v1/pago/reserva/by-codigo`: obtener pago reserva por codigo.
+
+## 2. `PagoReserva.java`
+Entidad que representa al PagoReserva.
+
+### Atributos:
+
+- `metodo_pago`:metodo de pago de los clientes.
+- `monto`:monto para la reservacion.
+- `reserva`: relacion llave foranea con la entidad Reserva.
+- `users`:Relacion llave foranea con la entidad users .
+- `calcularMontoDesdeReserva()`:metodo para automazatizar el monto segun las fechas y el precio.
+
+## 3. `IPagoReservaRepository.java`
+
+Repositorio JPA para la entidad `PagoReserva`. Provee métodos CRUD heredados de la base y un metodo para conexion con los servicios.
+### metodo:
+- `List<PagoReserva> findByReservaCodi(String codigo);`
+
+## 4. `IPagoReservaService.java`
+
+Clase auxiliar para el manejo de solicitudes de PagoReserva.
+### metodos aplicados:
+- `PagoReserva save(PagoReserva pagoReserva);`metodo para calcular aumtomaticamente el monto y se guarda en ese atributo.
+- ` List<PagoReserva> findByReservaCodigo(String codigo);`:metodo para encontrar por codigo el pagoReserva.
+## 5 PagoReservaService:
+implmentacion del Servicio con la lógica de negocio para el manejo de los pagos de la reserva.
+
+- `PagoReserva save(PagoReserva pagoReserva)`.
+
+- `List<PagoReserva> findByReservaCodigo(String codigo)`.
+
+## BackendCaffeNetApplication
+```
+ @OpenAPIDefinition(
+	info = @Info(title = "BackendPM API", version = "v1"),
+	servers = {
+		@Server(url = "https://7s68n3g8-9000.use2.devtunnels.ms")
+	}
+)
+```
+####  configuracion y enriquecimineto de la documentación Swagger/OpenAPI que se genera automáticamente a partir de los controladores.
+
+- `@OpenAPIDefinition:` Contenedor principal. Agrupa metadatos que complementan lo que el scanner infiere de los controladores Spring.
+
+- `info = @Info(...):`se Define la sección Info del documento OpenAPI: título, descripción, versión, términos de servicio, contacto, licencias, etc. Aquí se establece title = "BackendPM API" y version = "v1".
+
+- `servers = { @Server(...) }:`	Lista de entornos donde se aloja la API. Al añadir url, Swagger UI mostrará ese host como destino base para probar llamadas. Útil cuando tu app corre detrás de túneles ngrok/devtunnels o en múltiples stages (dev, qa, prod).
+

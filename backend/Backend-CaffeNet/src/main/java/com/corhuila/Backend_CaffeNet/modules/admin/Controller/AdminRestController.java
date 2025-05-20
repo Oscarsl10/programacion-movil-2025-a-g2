@@ -10,10 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:8100"})
+@CrossOrigin(origins = "*")
 
 @RestController
 @RequestMapping("/api")
@@ -24,6 +26,7 @@ public class AdminRestController {
     @Autowired
     IUsersRepository usersRepository;
 
+
     @GetMapping("/admin")
     public List<Admin> index(){
         return adminService.findAll();
@@ -32,7 +35,7 @@ public class AdminRestController {
     @PostMapping("/addAdmin")
     public ResponseEntity<?> addAdmin(@RequestBody Admin admin, @RequestParam String authorizedEmail) {
         // Verifica si el usuario que está intentando registrar es "admin@gmail.com"
-        if (!"admin@gmail.com".equals(authorizedEmail)) {
+        if (!"caffenet.service@gmail.com".equals(authorizedEmail)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tienes permisos para esta acción.");
         }
 
@@ -55,7 +58,7 @@ public class AdminRestController {
         return adminService.loginAdmin(loginAdminRequest);
     }
 
-    @GetMapping("/getAdmin/{email}")
+    @GetMapping("/admin/{email}")
     public Admin show(@PathVariable String email){
         return adminService.findById(email);
     }
@@ -68,17 +71,52 @@ public class AdminRestController {
     }
 
     @PutMapping("/admin/{email}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Admin update(@RequestBody Admin admin, @PathVariable String email){
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> update(@RequestBody Map<String, String> requestData, @PathVariable String email) {
         Admin adminActual = adminService.findById(email);
-        adminActual.setFull_name(admin.getFull_name());
-        adminActual.setTelefono(admin.getTelefono());
 
-        // Verifica si se envió una nueva contraseña antes de encriptarla
-        if (admin.getPassword() != null && !admin.getPassword().isEmpty()) {
-            adminActual.setPassword(adminService.hashContrasenia(admin.getPassword()));
+        if (adminActual == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
         }
 
-        return adminService.save(adminActual);
+        adminActual.setFull_name(requestData.get("full_name"));
+        adminActual.setTelefono(requestData.get("telefono"));
+
+        // Manejo de la actualización de la contraseña
+        String oldPassword = requestData.get("oldPassword");
+        String newPassword = requestData.get("newPassword");
+
+        if (oldPassword != null && newPassword != null && !newPassword.isEmpty()) {
+            // Verificar si oldPassword es correcta
+            if (!adminService.verificarContrasenia(oldPassword, adminActual.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La contraseña actual es incorrecta.");
+            }
+
+            // Verificar que la nueva contraseña no sea la misma que la actual
+            String newPasswordHashed = adminService.hashContrasenia(newPassword);
+            if (newPasswordHashed.equals(adminActual.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La nueva contraseña no puede ser igual a la actual.");
+            }
+
+            // Encriptar la nueva contraseña y guardarla
+            adminActual.setPassword(adminService.hashContrasenia(newPassword));
+        }
+
+        Admin usuarioActualizado = adminService.save(adminActual);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+
+    // Endpoint para recuperar la contraseña
+    @PostMapping("/recuperar-contrasenia-admin")
+    public ResponseEntity<Map<String, String>> recuperarContrasenia(@RequestParam String email) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            adminService.recuperarContrasenia(email);
+            response.put("message", "Se ha enviado una nueva contraseña a tu correo.");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

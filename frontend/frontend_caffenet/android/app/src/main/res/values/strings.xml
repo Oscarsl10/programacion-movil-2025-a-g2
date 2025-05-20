@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Caffenet</string>
+    <string name="title_activity_main">Caffenet</string>
+    <string name="package_name">com.caffeNet.app</string>
+    <string name="custom_url_scheme">com.caffeNet.app</string>
+</resources>

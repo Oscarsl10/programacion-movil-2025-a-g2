@@ -1,0 +1,132 @@
+<ion-header>
+    <ion-toolbar >
+      <ion-title>Pago por Código de Reserva</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <!-- Paso 1: Buscar reserva -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="search-outline" style="margin-right: 10px; vertical-align: middle;"></ion-icon>
+          Buscar Reserva
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Código de reserva</ion-label>
+          <ion-input
+            [(ngModel)]="reservaCodigo"
+            type="text"
+            placeholder="Ej. ABC123">
+          </ion-input>
+        </ion-item>
+        <ion-button
+          expand="block"
+          (click)="buscarReserva()">
+          <ion-icon name="search-outline" slot="start"></ion-icon>
+          Buscar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Paso 2: Detalle de la reserva -->
+    <ion-card *ngIf="reserva">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="information-circle-outline" style="margin-right: 10px; vertical-align: middle;"></ion-icon>
+          Detalle de Reserva
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="detail-row">
+          <p><strong><ion-icon name="key-outline" style="margin-right: 5px; vertical-align: middle;"></ion-icon> ID:</strong> {{ reserva.id }}</p>
+          <p><strong><ion-icon name="barcode-outline" style="margin-right: 5px; vertical-align: middle;"></ion-icon> Código:</strong> {{ reserva.codigo }}</p>
+          <p>
+            <strong><ion-icon name="restaurant-outline" style="margin-right: 5px; vertical-align: middle;"></ion-icon> Mesa:</strong>
+            {{ reserva.mesa.numero }} ({{ reserva.mesa.ubicacion }})
+          </p>
+          <p><strong><ion-icon name="mail-outline" style="margin-right: 5px; vertical-align: middle;"></ion-icon> Email:</strong> {{ reserva.users.email }}</p>
+          <p>
+            <strong><ion-icon name="calendar-outline" style="margin-right: 5px; vertical-align: middle;"></ion-icon> Inicio:</strong>
+            {{ reserva.fechaInicio | date:'short' }}
+          </p>
+          <p>
+            <strong><ion-icon name="time-outline" style="margin-right: 5px; vertical-align: middle;"></ion-icon> Fin:</strong>
+            {{ reserva.fechaFin | date:'short' }}
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Paso 3: Realizar pago -->
+    <ion-card *ngIf="reserva">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="card-outline" style="margin-right: 10px; vertical-align: middle;"></ion-icon>
+          Realizar Pago
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Método de pago</ion-label>
+          <ion-input
+            [(ngModel)]="metodoPago"
+            type="text"
+            placeholder="Ej. Tarjeta de crédito">
+          </ion-input>
+        </ion-item>
+        <ion-button
+          expand="block"
+          (click)="pagar()">
+          <ion-icon name="cash-outline" slot="start"></ion-icon>
+          Pagar
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Paso 4: Lista de pagos -->
+    <ion-card *ngIf="pagos.length > 0">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="list-outline" style="margin-right: 10px; vertical-align: middle;"></ion-icon>
+          Pagos Realizados
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let p of pagos">
+            <ion-label>
+              <h3><ion-icon name="wallet-outline" style="margin-right: 5px;"></ion-icon> {{ p.metodo_pago }} — {{ p.monto | currency }}</h3>
+              <p><ion-icon name="pricetag-outline" style="margin-right: 5px; font-size: 0.9rem;"></ion-icon> Código Reserva: {{ p.reserva.codigo }}</p>
+              <p>
+                <ion-icon name="calendar-outline" style="margin-right: 5px; font-size: 0.9rem;"></ion-icon>
+                {{ p.reserva.fechaInicio | date:'short' }}
+                –
+                {{ p.reserva.fechaFin | date:'short' }}
+              </p>
+            </ion-label>
+            <ion-button
+              fill="outline"
+              size="small"
+              slot="end"
+              [routerLink]="['/invoice-r-admin', p.id]">
+              <ion-icon name="document-text-outline" slot="start"></ion-icon>
+              Ver Comprobante
+            </ion-button>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Mensaje si no hay pagos -->
+    <p
+      *ngIf="pagos.length === 0 && reserva"
+      class="ion-text-center ion-margin-top">
+      <ion-icon name="alert-circle-outline" style="margin-right: 5px; vertical-align: middle; font-size: 1.2rem;"></ion-icon>
+      No se han realizado pagos para esta reserva.
+    </p>
+  </ion-content>
+
+  <app-bottom-bar-admin></app-bottom-bar-admin>

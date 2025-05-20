@@ -1,0 +1,87 @@
+ion-header ion-toolbar {
+  --background: #1e172d; /* vino oscuro */
+  --color: #f4e1c1;
+}
+
+ion-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+ion-searchbar {
+  --background: #2d223c;
+  --color: #f4e1c1;
+  --placeholder-color: #b8a8c6;
+  margin: 10px 16px;
+  border-radius: 10px;
+}
+
+ion-grid {
+  padding: 0 16px 16px 16px;
+}
+
+ion-card {
+  background: #2d223c;
+  color: #f4e1c1;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+
+.product-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 15px 15px 0 0;
+}
+
+ion-card-header {
+  border-bottom: 1px solid #5e4a7e;
+  padding-bottom: 8px;
+}
+
+ion-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+ion-card-content p {
+  font-size: 0.95rem;
+  margin: 8px 0;
+}
+
+.price-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #e0b354;
+}
+
+ion-button {
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+ion-button[expand="full"] {
+  --background: #4a235a; /* un vino oscuro para el botón */
+  --color: #f4e1c1;
+}
+
+ion-button[expand="full"]:hover {
+  --background: #1e172d;
+}
+/* Fondo morado profundo para TODA la app */
+ion-app, ion-content, ion-footer, app-bottom-bar {
+  --background: #1e172d !important; /* morado */
+  background: #1e172d !important;
+}
+
+/* Color de iconos/textos en la barra inferior */
+ion-footer ion-icon,
+ion-footer ion-label {
+  color: #f4e1c1;
+}

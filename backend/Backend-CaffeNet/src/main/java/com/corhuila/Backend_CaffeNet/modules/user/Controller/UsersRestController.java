@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = {"http://localhost:8100"})
+@CrossOrigin(origins = "*")
 
 @RestController
 @RequestMapping("/api")
@@ -53,7 +53,7 @@ public class UsersRestController {
         return usersService.loginUser(loginRequest);
     }
 
-    @GetMapping("/getUser/{email}")
+    @GetMapping("/user/{email}")
     public Users show(@PathVariable String email){
         return usersService.findById(email);
     }

@@ -10,9 +10,10 @@ public interface IBaseService <T extends ABaseEntity> {
 
     T findById(Long id) throws Exception;
 
-    T save(T entity) throws Exception;
+    T save(T entity)throws Exception;
 
     void update(Long id, T entity) throws Exception;
 
     void delete(Long id) throws Exception;
+
 }

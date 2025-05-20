@@ -5,4 +5,5 @@ import com.corhuila.Backend_CaffeNet.modules.comprobante.Entity.Comprobante;
 
 public interface IComprobanteService extends IBaseService<Comprobante> {
 
+    Comprobante save(Comprobante entity) throws Exception;
 }

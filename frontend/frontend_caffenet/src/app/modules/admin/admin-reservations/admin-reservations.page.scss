@@ -1,0 +1,162 @@
+/* Fondo y texto general */
+ion-content {
+  --background: #1e172d; /* fondo vino oscuro */
+  color: #f4e1c1;
+  --padding-bottom: 70px;
+}
+header {
+  background-color: #1e172d; /* Cambia "azul" por el color que desees */
+  color:#f4e1c1; /* Cambia el color del texto si quieres */
+}
+ion-title.titulo-pedido {
+  position: relative;
+  z-index: 1;
+}
+/* Barra inferior con bordes redondeados color morado */
+ion-toolbar {
+  --background: #1e172d !important; /* vino oscuro con !important */
+  --color: #f4e1c1 !important;
+  background-color: #1e172d !important; /* Forzar el color directo */
+  box-shadow: none !important; /* Quita cualquier sombra que parezca blanco */
+}
+
+/* También fuerza el color del ion-header (a veces tiene fondo blanco) */
+ion-header {
+  background-color: #1e172d !important;
+  box-shadow: none !important;
+}
+
+/* Header con gradiente 3D vino */
+ion-header, ion-toolbar {
+  background: linear-gradient(
+    to bottom,
+    #542b6a 0%,
+    #1e172d 60%
+  ) !important;
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.06),
+    inset 0 -3px 5px rgba(0,0,0,0.6),
+    0 4px 8px rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  --color: #f4e1c1 !important;
+}
+
+/* Título del toolbar */
+ion-title {
+  color: #e0b354 !important;
+  font-weight: bold;
+  font-size: 1.6rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Títulos h2 */
+h2 {
+  color: #e0b354;
+  margin: 15px 0 10px 0;
+  font-weight: 700;
+}
+
+/* Formularios y items */
+ion-item {
+  --background: #2d223c;
+  --color: #f4e1c1;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(224, 179, 84, 0.2);
+}
+
+ion-label {
+  color: #f4e1c1;
+  font-weight: 500;
+}
+
+ion-label[position="stacked"] {
+  color: #e0b354;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* Inputs y select */
+ion-input, ion-select {
+  --background: transparent;
+  --color: #f4e1c1;
+  --placeholder-color: #bba877;
+}
+
+/* Botones principales */
+ion-button {
+  --border-radius: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Botón expandido (Crear / Actualizar Mesa) */
+ion-button[expand="block"] {
+  background-color: #4a235a;
+  color: #f4e1c1;
+  --box-shadow: 0 4px 12px rgba(224, 179, 84, 0.4);
+  transition: background-color 0.3s ease;
+}
+
+ion-button[expand="block"]:hover {
+  background-color: #5e2e6a;
+}
+
+/* Botones con fill clear y colores */
+ion-button[fill="clear"][color="medium"] {
+  color: #bba877;
+  font-weight: 600;
+}
+
+ion-button[fill="clear"][color="primary"] {
+  color: #e0b354;
+  font-weight: 600;
+}
+
+ion-button[fill="clear"][color="danger"] {
+  color: #d9534f;
+  font-weight: 600;
+}
+
+ion-button[fill="clear"][color="success"] {
+  color: #5cb85c;
+  font-weight: 600;
+}
+
+ion-button[fill="clear"][color="warning"] {
+  color: #f0ad4e;
+  font-weight: 600;
+}
+
+/* Listados */
+ion-list {
+  margin-bottom: 30px;
+}
+
+/* Items dentro de listas con sombra y borde redondeado */
+ion-item {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(224, 179, 84, 0.15);
+}
+
+/* Etiquetas en lista con títulos y detalles */
+ion-label h3 {
+  color: #e0b354;
+  margin: 0 0 5px 0;
+}
+
+ion-label p {
+  margin: 0;
+  color: #f4e1c1;
+  font-size: 0.9rem;
+}
+
+/* Barra inferior admin - fondo vino oscuro */
+app-bottom-bar-admin, ion-footer {
+  --background: #1e172d !important;
+  background: #1e172d !important;
+  color: #f4e1c1 !important;
+  box-shadow: none !important;
+}
