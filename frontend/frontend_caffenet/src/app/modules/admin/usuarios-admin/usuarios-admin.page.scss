@@ -1,0 +1,155 @@
+ion-content {
+  --background: linear-gradient(to bottom, #1e172d, #2d223c);
+  --padding-bottom: 70px;
+}
+
+/* Toolbar */
+ion-toolbar {
+  --background: #1e172d;
+  --color: #f4e1c1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+ion-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* Edit User Card */
+.edit-user-card {
+  background: #3b2d4a;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+ion-card-header {
+  padding: 16px 20px;
+}
+
+ion-card-title {
+  color: #e0b354 !important;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* Input Styles */
+.custom-input {
+  --background: rgba(255, 255, 255, 0.08);
+  margin-bottom: 16px;
+  border-radius: 10px;
+  --highlight-color: #e0b354;
+}
+
+ion-item {
+  --background: transparent;
+  --border-color: rgba(244, 225, 193, 0.1);
+}
+
+ion-label {
+  color: #f4e1c1 !important;
+  opacity: 0.9;
+}
+
+ion-input {
+  --color: #f4e1c1;
+  --placeholder-color: rgba(244, 225, 193, 0.5);
+}
+
+/* Button Styles */
+ion-button {
+  --border-radius: 10px;
+  font-weight: 500;
+  margin-top: 8px;
+  height: 48px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+.save-button {
+  --background: #7a2239;
+  --color: white;
+  --box-shadow: 0 4px 12px rgba(122, 34, 57, 0.3);
+  margin-top: 16px;
+}
+
+/* User Cards */
+.user-card {
+  background: #3b2d4a;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.user-card:active {
+  transform: scale(0.98);
+}
+
+.user-details {
+  margin-bottom: 15px;
+}
+
+.user-details p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #f4e1c1;
+}
+
+.user-email {
+  color: #e0b354 !important;
+}
+
+.user-phone {
+  opacity: 0.8;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.edit-button {
+  --background: #7a2239;
+  --color: white;
+  min-width: 100px;
+}
+
+.password-button {
+  --background: #3b2d4a;
+  --color: #e0b354;
+  --border-color: #e0b354;
+  min-width: 180px;
+}
+
+/* List Styles */
+ion-list {
+  background: transparent;
+  padding: 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+ion-card {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Responsive Styles */
+@media screen and (min-width: 768px) {
+  .action-buttons {
+    justify-content: flex-end;
+  }
+  
+  ion-content {
+    --padding-start: 16px;
+    --padding-end: 16px;
+  }
+}

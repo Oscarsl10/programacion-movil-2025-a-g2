@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Gestión de Facturas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Mensajes -->
+  <div *ngIf="mensaje" class="ion-text-center">
+    <ion-text color="success">{{ mensaje }}</ion-text>
+  </div>
+
+  <div *ngIf="error" class="ion-text-center">
+    <ion-text color="danger">{{ error }}</ion-text>
+  </div>
+
+  <!-- Formulario de búsqueda -->
+  <ion-item>
+    <ion-label position="floating">Correo electrónico</ion-label>
+    <ion-input type="email" [(ngModel)]="email"></ion-input>
+  </ion-item>
+
+  <ion-button expand="full" color="primary" (click)="buscarPorEmail()">Buscar usuario</ion-button>
+
+  <div *ngIf="usuario">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Usuario encontrado</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Nombre:</strong> {{ usuario.full_name }}</p>
+        <p><strong>Email:</strong> {{ usuario.email }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Selección de método de pago -->
+  <div *ngIf="detalles.length > 0">
+    <ion-item>
+      <ion-label position="floating">Método de pago</ion-label>
+      <ion-select [(ngModel)]="metodoPago">
+        <ion-select-option value="Efectivo">Efectivo</ion-select-option>
+        <ion-select-option value="Tarjeta">Tarjeta</ion-select-option>
+        <ion-select-option value="Transferencia">Transferencia</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Lista de pedidos -->
+    <ion-list>
+      <ion-list-header>
+        Pedidos confirmados
+      </ion-list-header>
+      <ion-item *ngFor="let detalle of detalles">
+        <ion-label>
+          Producto: {{ detalle.carBuy?.producto?.nombre }} <br>
+          Cantidad: {{ detalle.carBuy?.cantidad ? detalle.carBuy.cantidad : 'Cantidad no disponible' }}
+          Total: {{ detalle.carBuy?.total | currency:'COP' }}
+        </ion-label>
+        <ion-button color="success" (click)="generarPago(detalle)">Generar factura</ion-button>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" color="tertiary" (click)="generarFacturaGeneral()"
+      *ngIf="detalles.length > 0 && metodoPago">
+      Generar factura general
+    </ion-button>
+
+  </div>
+
+</ion-content>
+<app-bottom-bar-admin></app-bottom-bar-admin>

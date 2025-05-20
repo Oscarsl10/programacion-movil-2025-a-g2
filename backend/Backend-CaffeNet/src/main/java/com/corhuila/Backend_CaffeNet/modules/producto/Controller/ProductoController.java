@@ -5,7 +5,7 @@ import com.corhuila.Backend_CaffeNet.common.base.ABaseController;
 import com.corhuila.Backend_CaffeNet.modules.producto.Entity.Producto;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = {"http://localhost:8100"})
+@CrossOrigin(origins = "*")
 
 @RestController
 @RequestMapping("/api/v1/producto")

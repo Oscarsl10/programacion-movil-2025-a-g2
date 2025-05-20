@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clonar') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Oscarsl10/backend-caffeNet'
+            }
+        }
+
+        stage('Compilar') {
+            steps {
+                dir('Backend-CaffeNet') {
+                    sh 'chmod +x mvnw'
+                    sh './mvnw clean package -DskipTests'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh 'docker --version'
+                sh 'docker images'
+                sh 'docker pull hello-world'
+
+                dir('Backend-CaffeNet') {
+                    sh 'docker build -t backendcaffenet .'
+                }
+            }
+        }
+
+        stage('Desplegar') {
+            steps {
+                dir('Backend-CaffeNet') {
+                    // Mostrar archivos para diagnóstico
+                    sh 'ls -la'
+
+                    // Construir solo el servicio "app" (el backend)
+                    sh 'docker compose build app'
+
+                    // Levantar solo el contenedor del backend sin tocar mysql-db
+                    sh 'docker compose up -d app'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completado'
+            sh 'docker ps'
+        }
+        failure {
+            echo 'El pipeline ha fallado'
+        }
+    }
+}

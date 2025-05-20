@@ -1,0 +1,59 @@
+<ion-content class="reserva-page">
+  <div class="reserva-container">
+    <h1 class="reserva-title">Reserva</h1>
+
+    <div class="form-container">
+      <!-- Fecha y hora de inicio -->
+      <ion-item class="reserva-item">
+        <ion-label position="floating">Fecha y hora de inicio</ion-label>
+        <ion-datetime presentation="date-time" [(ngModel)]="nuevaReserva.fechaInicio" name="fechaInicio">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Fecha y hora de fin -->
+      <ion-item class="reserva-item">
+        <ion-label position="floating">Fecha y hora de fin</ion-label>
+        <ion-datetime presentation="date-time" [(ngModel)]="nuevaReserva.fechaFin" name="fechaFin">
+        </ion-datetime>
+      </ion-item>
+
+      <!-- Número de personas -->
+      <ion-item class="reserva-item">
+        <ion-label position="floating">Número de personas</ion-label>
+        <ion-input type="number" min="1" [(ngModel)]="nuevaReserva.numero_personas" name="numero_personas">
+        </ion-input>
+      </ion-item>
+
+      <ion-item class="reserva-item">
+        <ion-label position="floating">Codigo de Reserva</ion-label>
+      <ion-input [(ngModel)]="nuevaReserva.codigo" name="codigo" required></ion-input>
+    </ion-item>
+
+      <!-- Selección de mesa -->
+      <ion-item class="reserva-item">
+        <ion-label position="floating">Selecciona una mesa</ion-label>
+        <ion-select [(ngModel)]="nuevaReserva.mesa" name="mesa" interface="popover">
+          <ion-select-option *ngFor="let mesa of mesas" [value]="mesa">
+            Mesa {{ mesa.numero }} ({{ mesa.capacidad }} personas) – {{ mesa.estado }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Mensajes condicionales -->
+      <p *ngIf="mesas.length === 0" class="warning-text">
+        Actualmente no hay mesas disponibles. Por favor, inténtalo más tarde.
+      </p>
+      <p *ngIf="mesas.length > 0">
+        Por favor, asegúrate de que la información es correcta antes de continuar.<br>
+        ¡Esperamos verte pronto!
+      </p>
+
+      <!-- Botón de reserva -->
+      <ion-button expand="full" (click)="reservar()" class="reserva-button">
+        Realizar Reserva
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+
+<app-bottom-bar></app-bottom-bar>

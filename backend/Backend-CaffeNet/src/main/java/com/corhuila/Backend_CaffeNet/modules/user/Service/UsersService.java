@@ -99,20 +99,26 @@ public class UsersService {
     }
 
     public Boolean loginUser(LoginRequest loginRequest) {
+        System.out.println("Intento de login con: " + loginRequest.getUserId());
+
         Optional<Users> user = usersRepository.findById(loginRequest.getUserId());
 
         if (user.isEmpty()) {
+            System.out.println("Usuario no encontrado.");
             return false;
         }
 
         Users user1 = user.get();
-        // Encripta la contraseña ingresada y compárala con la almacenada
-        if (!user1.getPassword().equals(hashContrasenia(loginRequest.getPassword()))) {
+        boolean contraseniaValida = user1.getPassword().equals(hashContrasenia(loginRequest.getPassword()));
+
+        if (!contraseniaValida) {
+            System.out.println("Contraseña inválida.");
             return false;
         }
 
         return true;
     }
+
 
     @Transactional
     public Users save(Users user){

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+  <!-- Sólo en builds debug: confía en certificados de usuario (rootCA) y de sistema -->
+  <debug-overrides>
+    <trust-anchors>
+      <certificates src="user"/>
+      <certificates src="system"/>
+    </trust-anchors>
+  </debug-overrides>
+
+  <!-- En todos los builds, confía al menos en system CAs -->
+  <base-config>
+    <trust-anchors>
+      <certificates src="system"/>
+    </trust-anchors>
+  </base-config>
+
+  <!-- Para tu dominio/IP con HTTPS, confía en system y en user (debug) -->
+  <domain-config cleartextTrafficPermitted="false">
+    <domain includeSubdomains="true">192.168.10.29</domain>
+    <trust-anchors>
+      <certificates src="system"/>
+      <certificates src="user"/>    <!-- ← este permite tu rootCA instalado -->
+    </trust-anchors>
+  </domain-config>
+
+</network-security-config>

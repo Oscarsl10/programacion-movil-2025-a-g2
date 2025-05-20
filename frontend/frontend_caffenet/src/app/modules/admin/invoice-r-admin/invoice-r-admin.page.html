@@ -1,0 +1,58 @@
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading" name="crescent" class="ion-margin-top"></ion-spinner>
+
+  <ng-container *ngIf="!loading && comprobante; else mensaje">
+    <div #invoiceContent>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Comprobante #{{ comprobante.id }}</ion-card-title>
+          <ion-card-subtitle>
+            Emitido: {{ comprobante.fecha_emision | date:'short' }}
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Código de Reserva:</strong> {{ comprobante.reserva.codigo }}</p>
+          <p><strong>ID Reserva:</strong> {{ comprobante.reserva.id }}</p>
+          <p>
+            <strong>Mesa:</strong>
+            {{ comprobante.reserva.mesa.numero }} –
+            {{ comprobante.reserva.mesa.ubicacion }}
+          </p>
+          <p><strong>Email:</strong> {{ comprobante.users.email }}</p>
+          <p>
+            <strong>Método de Pago:</strong>
+            {{ comprobante.pagoReserva.metodo_pago }}
+          </p>
+          <p>
+            <strong>Monto:</strong>
+            {{ comprobante.pagoReserva.monto | currency }}
+          </p>
+          <p>
+            <strong>Inicio:</strong>
+            {{ comprobante.reserva.fechaInicio | date:'short' }}
+          </p>
+          <p>
+            <strong>Fin:</strong>
+            {{ comprobante.reserva.fechaFin | date:'short' }}
+          </p>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- ✅ Botón de exportar debajo del comprobante -->
+    <div class="ion-text-center ion-margin-top">
+      <ion-button color="success" (click)="exportPDF()">
+        <ion-icon slot="start" name="download-outline"></ion-icon>
+        Descargar Comprobante
+      </ion-button>
+    </div>
+  </ng-container>
+
+  <ng-template #mensaje>
+    <p class="ion-text-center ion-margin-top">
+      {{ errorMsg || 'No se encontró comprobante para este pago.' }}
+    </p>
+  </ng-template>
+</ion-content>
+
+<app-bottom-bar-admin></app-bottom-bar-admin>

@@ -1,0 +1,20 @@
+/* Cambiar el color de fondo y texto del encabezado */
+ion-toolbar.custom-header {
+  --background: #1e172d; /* Verde */
+  --color: white;        /* Texto blanco */
+}
+
+/* Opcional: cambiar color de los ion-item en la lista */
+ion-item {
+  --background: #f0f0f0; /* Fondo claro */
+  color: #333333;        /* Texto oscuro */
+}
+
+/* Centrar y dar margen a los mensajes de error o sin resultados */
+.ion-text-center {
+  text-align: center;
+}
+
+.ion-margin-top {
+  margin-top: 16px;
+}

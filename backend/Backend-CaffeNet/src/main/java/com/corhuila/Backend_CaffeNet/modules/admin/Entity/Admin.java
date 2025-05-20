@@ -20,6 +20,7 @@ public class Admin {
         this.password = password;
     }
     @Id
+    @Column(unique = true, nullable = false)
     private String email;
     @Column(length = 100)
     private String full_name;
