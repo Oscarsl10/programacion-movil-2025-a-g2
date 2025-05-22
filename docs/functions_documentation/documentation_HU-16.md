@@ -201,8 +201,55 @@ pagoReserva.setUsers(usuario);
 Esto garantiza que se valide la existencia de la reserva y el usuario antes de asociarlos al pago.
 
 ---
+## generacion de facturas en pdf
+- (especifico y funcional desde Andorid 11 y posteriores).
+```
+ async exportPDFAndOpen() {
+    const element = this.invoiceContent.nativeElement;
+    if (!element) return;
 
+    // Renderiza el contenido HTML como imagen
+    const canvas = await html2canvas(element, { scale: 2 });
 
+    // Convierte la imagen a escala de grises (opcional)
+    const grayscaleCanvas = document.createElement('canvas');
+    const ctx = grayscaleCanvas.getContext('2d');
+    grayscaleCanvas.width = canvas.width;
+    grayscaleCanvas.height = canvas.height;
+
+    const imgData = canvas.getContext('2d')?.getImageData(0, 0, canvas.width, canvas.height);
+    if (ctx && imgData) {
+      const data = imgData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+        data[i] = data[i + 1] = data[i + 2] = avg;
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+    
+```
+Este método es responsable de generar un comprobante en formato PDF a partir del contenido HTML visible en pantalla y luego abrirlo en el dispositivo, ya sea en un visor de archivos móvil o en una nueva pestaña del navegador. Se utiliza en la vista invoice-r-admin.
+### paso de la conversion del pdf
+
+- Usa @ViewChild('invoiceContent') para acceder a una sección del HTML que contiene el comprobante.
+
+- Con html2canvas, renderiza ese contenido como una imagen en un lienzo (canvas).
+
+- Crea un nuevo canvas para manipular la imagen.
+
+- Calcula el promedio de los canales RGB de cada píxel y lo aplica, creando un efecto de escala de grises.
+
+- Inserta la imagen en el PDF, ajustando el tamaño a la página A5.
+
+- Convierte el PDF a una cadena Base64 (datauristring).
+
+- Usa Capacitor Filesystem para guardar el PDF en el directorio Documents.
+
+#### Dependiendo de la plataforma:
+
+Android/iOS: abre el archivo con la app predeterminada (FileOpener).
+
+- abre un visor PDF en una nueva pestaña del navegador.
 
 ## Requisitos Técnicos
 

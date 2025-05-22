@@ -70,6 +70,20 @@ ionic serve
 # Ejecutar en dispositivo Android (con Capacitor configurado)
 ionic cap run android
 ````
+### instalacion,generacion y abrir archivos PDF en aplicaciones móviles con Capacitor
+#### abrir cmd y pegar estos comandos en cmd
+````
+npm install @cesarbr/pdf-generator
+npm install @capawesome-team/capacitor-file-opener
+npx cap sync.
+````
+| Comando                                              | Función principal                                               |
+| ---------------------------------------------------- | --------------------------------------------------------------- |
+| `npm install @cesarbr/pdf-generator`                 | Instala plugin para **generar PDFs nativamente**.               |
+| `npm install @capawesome-team/capacitor-file-opener` | Instala plugin para **abrir archivos** en el dispositivo.       |
+| `npx cap sync`                                       | **Sincroniza** plugins y cambios con los proyectos Android/iOS. |
+
+
 ##  Configuración
 API Base URL: Configurada en api.config.ts.  
 
