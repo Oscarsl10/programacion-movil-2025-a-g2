@@ -130,7 +130,7 @@ DTO genérico que encapsula las respuestas de los endpoints de la API.
 
 ---
 
-## Entidad: `Admin`
+# Entidad: `Admin`
 
 ```java
 @Id
@@ -144,19 +144,274 @@ private String password;
 @Column(length = 10)
 private String telefono;
 ```
-
----
-
-## LoginAdminRequest
-
-```java
-private String userId;
-private String password;
+## Admin Controller
 ```
+@CrossOrigin(origins = "*")
 
+@RestController
+@RequestMapping("/api")
+public class AdminRestController {
+
+    @Autowired
+    AdminService adminService;
+    @Autowired
+    IUsersRepository usersRepository;
+
+
+    @GetMapping("/admin")
+    public List<Admin> index(){
+        return adminService.findAll();
+    }
+
+    @PostMapping("/addAdmin")
+    public ResponseEntity<?> addAdmin(@RequestBody Admin admin, @RequestParam String authorizedEmail) {
+        // Verifica si el usuario que está intentando registrar es "admin@gmail.com"
+        if (!"caffenet.service@gmail.com".equals(authorizedEmail)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tienes permisos para esta acción.");
+        }
+
+        // Validación para no permitir el uso de un correo existente en Users
+        Optional<Users> usersExistente = usersRepository.findById(admin.getEmail());
+        if (usersExistente.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("USER_EMAIL");
+        }
+
+        try {
+            Admin newAdmin = adminService.addAdmin(admin);
+            return ResponseEntity.ok(newAdmin);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("ADMIN_EMAIL");
+        }
+    }
+
+    @PostMapping("/loginAdmin")
+    public Boolean loginAdmin(@RequestBody LoginAdminRequest loginAdminRequest){
+        return adminService.loginAdmin(loginAdminRequest);
+    }
+
+    @GetMapping("/admin/{email}")
+    public Admin show(@PathVariable String email){
+        return adminService.findById(email);
+    }
+
+
+    @GetMapping("/checkEmailAdmin")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        boolean exists = adminService.existsAdminByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+
+    @PutMapping("/admin/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> update(@RequestBody Map<String, String> requestData, @PathVariable String email) {
+        Admin adminActual = adminService.findById(email);
+
+        if (adminActual == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+        }
+
+        adminActual.setFull_name(requestData.get("full_name"));
+        adminActual.setTelefono(requestData.get("telefono"));
+
+        // Manejo de la actualización de la contraseña
+        String oldPassword = requestData.get("oldPassword");
+        String newPassword = requestData.get("newPassword");
+
+        if (oldPassword != null && newPassword != null && !newPassword.isEmpty()) {
+            // Verificar si oldPassword es correcta
+            if (!adminService.verificarContrasenia(oldPassword, adminActual.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La contraseña actual es incorrecta.");
+            }
+
+            // Verificar que la nueva contraseña no sea la misma que la actual
+            String newPasswordHashed = adminService.hashContrasenia(newPassword);
+            if (newPasswordHashed.equals(adminActual.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La nueva contraseña no puede ser igual a la actual.");
+            }
+
+            // Encriptar la nueva contraseña y guardarla
+            adminActual.setPassword(adminService.hashContrasenia(newPassword));
+        }
+
+        Admin usuarioActualizado = adminService.save(adminActual);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+
+    // Endpoint para recuperar la contraseña
+    @PostMapping("/recuperar-contrasenia-admin")
+    public ResponseEntity<Map<String, String>> recuperarContrasenia(@RequestParam String email) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            adminService.recuperarContrasenia(email);
+            response.put("message", "Se ha enviado una nueva contraseña a tu correo.");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+}
+```
+## IAdminRepository
+```
+@Repository
+public interface IAdminRepository extends JpaRepository <Admin, String> {
+    boolean existsAdminByEmail(String email); // Método para verificar si el correo existe
+}
+```
+## AdminService
+```
+@Service
+public class AdminService {
+
+    @Autowired
+    IAdminRepository adminRepository;
+    @Autowired
+    JavaMailSender mailSender;
+
+    // Método para recuperar contraseña
+    public void recuperarContrasenia(String email) {
+        Optional<Admin> usuario = adminRepository.findById(email);
+
+        if (usuario.isEmpty()) {
+            throw new RuntimeException("El correo no está registrado.");
+        }
+
+        // Generar una nueva contraseña aleatoria
+        String nuevaContrasenia = generarContraseniaAleatoria(8);
+        String contraseniaEncriptada = hashContrasenia(nuevaContrasenia);
+
+        // Guardar la nueva contraseña encriptada en la BD
+        Admin admin = usuario.get();
+        admin.setPassword(contraseniaEncriptada);
+        adminRepository.save(admin);
+
+        // Enviar la nueva contraseña por correo
+        enviarCorreo(email, nuevaContrasenia);
+    }
+
+    // Método para generar una contraseña aleatoria
+    private String generarContraseniaAleatoria(int length) {
+        String caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            sb.append(caracteres.charAt(random.nextInt(caracteres.length())));
+        }
+        return sb.toString();
+    }
+
+    // Método para enviar la nueva contraseña por correo
+    private void enviarCorreo(String destinatario, String nuevaContrasenia) {
+        SimpleMailMessage mensaje = new SimpleMailMessage();
+        mensaje.setTo(destinatario);
+        mensaje.setSubject("Recuperación de contraseña");
+        mensaje.setText("Tu nueva contraseña temporal es: " + nuevaContrasenia +
+                "\nPor favor, inicia sesión y cámbiala lo antes posible.");
+
+        mailSender.send(mensaje);
+    }
+
+    public boolean existsAdminByEmail(String email) {
+        return adminRepository.existsAdminByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    public Admin findById(String email){
+        return adminRepository.findById(email).orElse(null);
+    }
+
+    public Admin addAdmin(Admin admin){
+        if (existsAdminByEmail(admin.getEmail())) { // Primero verifica si el email ya existe
+            throw new RuntimeException("El correo ya está registrado.");
+        }
+
+        admin.setPassword(hashContrasenia(admin.getPassword()));
+        return adminRepository.save(admin);
+    }
+
+    public String hashContrasenia(String password){
+        try{
+            MessageDigest instancia = MessageDigest.getInstance("SHA-256");
+            byte [] hash = instancia.digest(password.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash);
+        }catch (NoSuchAlgorithmException e){
+            throw new RuntimeException("Error al encriptar la contraseña");
+        }
+    }
+
+    public Boolean loginAdmin(LoginAdminRequest loginAdminRequest){
+        Optional<Admin> admin = adminRepository.findById(loginAdminRequest.getUserId());
+
+        if (admin.isEmpty()){
+            return false;
+        }
+
+        Admin admin1 = admin.get();
+
+        if (!admin1.getPassword().equals(hashContrasenia(loginAdminRequest.getPassword()))){
+            return false;
+        }
+
+        return true;
+    }
+
+    @Transactional
+    public Admin save(Admin admin){
+        return adminRepository.save(admin);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<Admin> findAll(){
+        return (List<Admin>) adminRepository.findAll();
+    }
+
+    public boolean verificarContrasenia(String rawPassword, String hashedPassword) {
+        return hashedPassword.equals(hashContrasenia(rawPassword));
+    }
+}
+```
+---
+## LoginAdminRequest
+```
+package com.corhuila.Backend_CaffeNet.modules.admin.request;
+
+public class LoginAdminRequest {
+
+    public LoginAdminRequest(){
+
+    }
+
+    public LoginAdminRequest (String userId, String password){
+        this.userId = userId;
+        this.password = password;
+    }
+
+    private String userId;
+    private String password;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+}
+```
 ---
 
-## Módulo: `Comprobante`
+# Módulo: `Comprobante`
 
 ### Paquetes
 - `modules.comprobante.Controller.ComprobanteController`
@@ -171,19 +426,68 @@ private String password;
 ### Entidad: `Comprobante`
 
 ```java
-@Temporal(TemporalType.TIMESTAMP)
-private Date fecha_Emision;
+ @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm", timezone = "America/Bogota")
+    @Column(name = "fecha_emision")
+    private Date fecha_emision;
 
-@ManyToOne
-@JoinColumn(name = "pedido_id", nullable = false)
-private Pedido pedido;
+    @ManyToOne
+    @JoinColumn(name = "detalle_pedido_id", nullable = false)
+    private Detalle_Pedido detalle_pedido;
 
-@ManyToOne
-@JoinColumn(name = "user_id", nullable = false)
-private Users users;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users users;
+
+    @ManyToOne
+    @JoinColumn(name = "pago_id", nullable = false)
+    private Pago pago;
+```
+## icomprobanteService
+```
+public interface IComprobanteService extends IBaseService<Comprobante> {
+
+    Comprobante save(Comprobante entity) throws Exception;
+    Optional<Comprobante> findByPagoId(Long pagoId) throws Exception;
+}
+```
+## ComprobanteService
+```
+@Service
+public class ComprobanteService extends ABaseService<Comprobante> implements IComprobanteService {
+
+    @Autowired
+    private IComprobanteRepository comprobanteRepository;
+
+    @Override
+    protected IBaseRepository<Comprobante, Long> getRepository() {
+        return comprobanteRepository;
+    }
+
+    @Override
+    public Optional<Comprobante> findByPagoId(Long pagoId) {
+        return comprobanteRepository.findByPagoId(pagoId);
+    }
+}
 ```
 
+## ComprobanteController
+```
+@CrossOrigin(origins = "*")
+
+@RestController
+@RequestMapping("/api/v1/comprobante")
+public class ComprobanteController extends ABaseController<Comprobante, IComprobanteService> {
+
+    @Autowired
+    private IPagoRepository pagoRepository;
+
+    public ComprobanteController(IComprobanteService service) {
+        super(service, "Continent");
+    }
+```
 ---
+# modulo detalle_pedido
 
 ## Detalle_PedidoController.java
 
@@ -297,6 +601,7 @@ public class Detalle_Pedido extends ABaseEntity {
 }
 ```
 
+
 ## IDetalle_PedidoRepository.java
 
 ```java
@@ -317,44 +622,52 @@ public interface IDetalle_PedidoRepository extends IBaseRepository<Detalle_Pedid
 ## IDetalle_PedidoService.java
 
 ```java
-package com.corhuila.Backend_CaffeNet.modules.detalle_pedido.IService;
+package com.corhuila.Backend_CaffeNet.modules.comprobante.IService;
+
+import java.util.Optional;
 
 import com.corhuila.Backend_CaffeNet.common.base.IBaseService;
-import com.corhuila.Backend_CaffeNet.modules.detalle_pedido.Entity.Detalle_Pedido;
+import com.corhuila.Backend_CaffeNet.modules.comprobante.Entity.Comprobante;
 
-public interface IDetalle_PedidoService extends IBaseService<Detalle_Pedido> {
+public interface IComprobanteService extends IBaseService<Comprobante> {
 
+    Comprobante save(Comprobante entity) throws Exception;
+    Optional<Comprobante> findByPagoId(Long pagoId) throws Exception;
 }
 ```
 
 ## Detalle_PedidoService.java
 
 ```java
-package com.corhuila.Backend_CaffeNet.modules.detalle_pedido.Service;
+package com.corhuila.Backend_CaffeNet.modules.comprobante.Service;
 
 import com.corhuila.Backend_CaffeNet.common.base.ABaseService;
-import com.corhuila.Backend_CaffeNet.modules.detalle_pedido.Entity.Detalle_Pedido;
-import com.corhuila.Backend_CaffeNet.modules.detalle_pedido.IService.IDetalle_PedidoService;
+import com.corhuila.Backend_CaffeNet.modules.comprobante.Entity.Comprobante;
+import com.corhuila.Backend_CaffeNet.modules.comprobante.IService.IComprobanteService;
 import com.corhuila.Backend_CaffeNet.common.base.IBaseRepository;
-import com.corhuila.Backend_CaffeNet.modules.detalle_pedido.IRepository.IDetalle_PedidoRepository;
-import com.corhuila.Backend_CaffeNet.modules.pedido.Entity.Pedido;
-import com.corhuila.Backend_CaffeNet.modules.pedido.IRepository.IPedidoRepository;
-import com.corhuila.Backend_CaffeNet.modules.producto.Entity.Producto;
-import com.corhuila.Backend_CaffeNet.modules.producto.IRepository.IProductoRepository;
+import com.corhuila.Backend_CaffeNet.modules.comprobante.IRepository.IComprobanteRepository;
+
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @Service
-public class Detalle_PedidoService extends ABaseService<Detalle_Pedido> implements IDetalle_PedidoService {
+public class ComprobanteService extends ABaseService<Comprobante> implements IComprobanteService {
 
     @Autowired
-    private IDetalle_PedidoRepository detalle_pedidoRepository;
+    private IComprobanteRepository comprobanteRepository;
 
     @Override
-    protected IBaseRepository<Detalle_Pedido, Long> getRepository() {
-        return detalle_pedidoRepository;
+    protected IBaseRepository<Comprobante, Long> getRepository() {
+        return comprobanteRepository;
     }
 
+    @Override
+    public Optional<Comprobante> findByPagoId(Long pagoId) {
+        return comprobanteRepository.findByPagoId(pagoId);
+    }
 }
 ```
 
@@ -399,11 +712,15 @@ public class Pago extends ABaseEntity {
     private String metodo_Pago;
 
     @Column(name = "monto")
-    private String monto;
+    private Double monto;
 
     @ManyToOne
-    @JoinColumn(name = "pedido_id", nullable = false) // Clave foránea
-    private Pedido pedido;
+    @JoinColumn(name = "detalle_pedido_id", nullable = false) // Clave foránea
+    private Detalle_Pedido detalle_pedido;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private Users users;
 
     public String getMetodo_Pago() {
         return metodo_Pago;
@@ -413,22 +730,29 @@ public class Pago extends ABaseEntity {
         this.metodo_Pago = metodo_Pago;
     }
 
-    public String getMonto() {
-        return monto;
+    public Double getMonto() {
+        return monto = detalle_pedido.getCarBuy().getTotal();
     }
 
-    public void setMonto(String monto) {
+    public void setMonto(Double monto) {
         this.monto = monto;
     }
 
-    public Pedido getPedido() {
-        return pedido;
+    public Users getUsers() {
+        return users;
     }
 
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
+    public Detalle_Pedido getDetalle_pedido() {
+        return detalle_pedido;
+    }
+
+    public void setDetalle_pedido(Detalle_Pedido detalle_pedido) {
+        this.detalle_pedido = detalle_pedido;
+    }
 }
 ```
 
@@ -449,13 +773,33 @@ public interface IPagoRepository extends IBaseRepository<Pago, Long> {
 ## IPagoService.java
 
 ```java
-package com.corhuila.Backend_CaffeNet.modules.pago.IService;
+@Service
+public class PagoService extends ABaseService<Pago> implements IPagoService {
 
-import com.corhuila.Backend_CaffeNet.common.base.IBaseService;
-import com.corhuila.Backend_CaffeNet.modules.pago.Entity.Pago;
 
-public interface IPagoService extends IBaseService<Pago> {
+    @Autowired
+    private IPagoRepository pagoRepository;
+    @Autowired
+    private ICarBuyRepository carBuyRepository;
 
+    @Override
+    protected IBaseRepository<Pago, Long> getRepository() {
+        return pagoRepository;
+    }
+
+    @Override
+    @Transactional
+    public Pago save(Pago entity) throws Exception {
+        // Cambiar estado del carrito a COMPRADO
+        Detalle_Pedido detalle = entity.getDetalle_pedido();
+        if (detalle != null && detalle.getCarBuy() != null) {
+            CarBuy carBuy = carBuyRepository.findById(detalle.getCarBuy().getId())
+                .orElseThrow(() -> new Exception("CarBuy no encontrado"));
+            carBuy.setEstado(EstadoCarrito.COMPRADO);
+            carBuyRepository.save(carBuy);
+        }
+        return pagoRepository.save(entity);
+    }
 }
 ```
 
@@ -485,7 +829,7 @@ public class PagoService extends ABaseService<Pago> implements IPagoService {
 }
 ```
 
-## Módulo: `pedido`
+# Módulo: `pedido`
 
 ### Funcionalidad
 Gestiona los pedidos realizados por los clientes dentro del sistema CaffeNet. Incluye la creación, consulta, actualización y borrado lógico de pedidos.
@@ -511,7 +855,7 @@ Cliente HTTP → PedidoController → PedidoServiceImpl → PedidoRepository →
 
 ---
 
-## Módulo: `producto`
+# Módulo: `producto`
 
 ### Funcionalidad
 Gestiona los productos ofrecidos en CaffeNet, como cafés, postres y snacks.
@@ -536,7 +880,7 @@ Cliente HTTP → ProductoController → ProductoServiceImpl → ProductoReposito
 
 ---
 
-## Módulo: `reserva`
+# Módulo: `reserva`
 
 ### Funcionalidad
 Permite a los clientes reservar espacios o servicios dentro de CaffeNet, como áreas de coworking o mesas.
@@ -577,7 +921,107 @@ Controlador REST que expone los endpoints relacionados con los usuarios.
 - `GET /api/checkEmail`: Verifica si un email ya está registrado.
 - `PUT /api/user/{email}`: Actualiza la información y/o contraseña del usuario.
 - `POST /api/recuperar-contrasenia`: Genera y envía una nueva contraseña al correo del usuario.
+```
+@CrossOrigin(origins = "*")
 
+@RestController
+@RequestMapping("/api")
+public class UsersRestController {
+
+    @Autowired
+    UsersService usersService;
+
+    @Autowired
+    IAdminRepository adminRepository; // Inyectamos el repositorio de admin
+
+    @GetMapping("/user")
+    public List<Users> index(){
+        return usersService.findAll();
+    }
+
+    @PostMapping("/addUser")
+    public ResponseEntity<?> addUser(@RequestBody Users user) {
+        // Validación para no permitir el uso del correo existente y de un administrador
+        Optional<Admin> adminExistente = adminRepository.findById(user.getEmail());
+        if (adminExistente.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("ADMIN_EMAIL");
+        }
+
+        try {
+            Users newUser = usersService.addUser(user);
+            return ResponseEntity.ok(newUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("USER_EMAIL");
+        }
+    }
+
+    @PostMapping("/loginUser")
+    public Boolean loginUser(@RequestBody LoginRequest loginRequest){
+        return usersService.loginUser(loginRequest);
+    }
+
+    @GetMapping("/user/{email}")
+    public Users show(@PathVariable String email){
+        return usersService.findById(email);
+    }
+
+    @GetMapping("/checkEmail")
+    public ResponseEntity<Boolean> checkEmail(@RequestParam String email) {
+        boolean exists = usersService.existsByEmail(email);
+        return ResponseEntity.ok(exists);
+    }
+
+    @PutMapping("/user/{email}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> update(@RequestBody Map<String, String> requestData, @PathVariable String email) {
+        Users userActual = usersService.findById(email);
+
+        if (userActual == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado.");
+        }
+
+        userActual.setFull_name(requestData.get("full_name"));
+        userActual.setTelefono(requestData.get("telefono"));
+
+        // Manejo de la actualización de la contraseña
+        String oldPassword = requestData.get("oldPassword");
+        String newPassword = requestData.get("newPassword");
+
+        if (oldPassword != null && newPassword != null && !newPassword.isEmpty()) {
+            // Verificar si oldPassword es correcta
+            if (!usersService.verificarContrasenia(oldPassword, userActual.getPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("La contraseña actual es incorrecta.");
+            }
+
+            // Verificar que la nueva contraseña no sea la misma que la actual
+            String newPasswordHashed = usersService.hashContrasenia(newPassword);
+            if (newPasswordHashed.equals(userActual.getPassword())) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La nueva contraseña no puede ser igual a la actual.");
+            }
+
+            // Encriptar la nueva contraseña y guardarla
+            userActual.setPassword(usersService.hashContrasenia(newPassword));
+        }
+
+        Users usuarioActualizado = usersService.save(userActual);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+
+    // Endpoint para recuperar la contraseña
+    @PostMapping("/recuperar-contrasenia")
+    public ResponseEntity<Map<String, String>> recuperarContrasenia(@RequestParam String email) {
+        Map<String, String> response = new HashMap<>();
+        try {
+            usersService.recuperarContrasenia(email);
+            response.put("message", "Se ha enviado una nueva contraseña a tu correo.");
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            response.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+}
+```
 ## 2. `Users.java`
 
 Entidad que representa a un usuario.
@@ -588,6 +1032,7 @@ Entidad que representa a un usuario.
 - `full_name`: Nombre completo.
 - `password`: Contraseña (encriptada).
 - `telefono`: Número telefónico.
+
 
 ## 3. `IUsersRepository.java`
 
@@ -628,7 +1073,7 @@ Servicio con la lógica de negocio para el manejo de usuarios.
 
 **Nota**: Este módulo también interactúa con `IAdminRepository` para evitar colisión de emails con administradores.
 
-## modulo car_buys
+# modulo car_buys
 ### Funcionalidad
 este modulo implementa el carrito de productos para los clientes. A continuacion se documentan los archivos principales del modulo.
 
@@ -659,6 +1104,7 @@ Entidad que representa al carrito.
 - `total`: total de los productos en el carrito.
 - `cantidad`: precio de los productos.
 - `producto`: relacion llave foranea con la entidad producto.
+- `Users`: relacion llave foranea con la entidad user.
 ## 3 EstdoCarrito enum
 qui es donde se relaciona los estados en el carrito.
 ### valores dados:
@@ -666,6 +1112,14 @@ qui es donde se relaciona los estados en el carrito.
 - COMPRADO.
 - RETIRADO.
 ## 4. `ICarBuyRepository.java`
+```
+public interface ICarBuyRepository extends IBaseRepository<CarBuy, Long> {
+
+    List<CarBuy> findByProductoIdAndEstado(Long productoId, EstadoCarrito estado);
+
+    List<CarBuy> findByUserEmailAndProductoIdAndEstado(String email, Long productoId, EstadoCarrito estado);
+}
+```
 
 Repositorio JPA para la entidad `CarBuy`. Provee métodos CRUD heredados de la base.
 
@@ -677,8 +1131,86 @@ implementacion del Servicio con la lógica de negocio para el manejo de los prod
 
 - `void deleteAll()`:al usar el metodo eliminar todos los produdctos del carro.
 - `void deleteById(Long id)`: elimina por id los productos del carrito.
+- `CarBuy save(CarBuy entity)`:busca si hay un carbuy Pendiente para el producto y el usario.Si existe se suma la cantidad y si no se crea uno nuevo.
 
-## modulo Mesa.
+```
+@Service
+public class CarBuyService extends ABaseService<CarBuy> implements ICarBuyService {
+
+    @Autowired
+    private ICarBuyRepository carBuyRepository;
+    @Autowired
+    private IProductoRepository productoRepository;
+
+    @Override
+    protected IBaseRepository<CarBuy, Long> getRepository() {
+        return carBuyRepository;
+    }
+
+    // Método para eliminar todos los productos
+    public void deleteAll() {
+        try {
+            List<CarBuy> carBuys = carBuyRepository.findAll();
+            for (CarBuy carBuy : carBuys) {
+                if (carBuy.getEstado() == EstadoCarrito.SOLICITADO) {
+                    carBuy.setEstado(EstadoCarrito.SOLICITADO);
+                    carBuyRepository.save(carBuy);
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al limpiar el carrito: " + e.getMessage());
+        }
+    }
+
+    public void deleteById(Long id) {
+        CarBuy carBuy = carBuyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto con ID " + id + " no encontrado."));
+        carBuy.setEstado(EstadoCarrito.RETIRADO); // Cambia a RETIRADO
+        carBuyRepository.save(carBuy);
+    }
+
+    @Override
+    @Transactional
+    public CarBuy save(CarBuy entity) throws Exception {
+        Producto producto = productoRepository
+                .findById(entity.getProducto().getId())
+                .orElseThrow(() -> new Exception("Producto no encontrado"));
+
+        // Busca si ya hay un CarBuy PENDIENTE para este producto y usuario
+        CarBuy existente = carBuyRepository
+                .findByUserEmailAndProductoIdAndEstado(
+                        entity.getUser().getEmail(),
+                        entity.getProducto().getId(),
+                        EstadoCarrito.PENDIENTE)
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        // Si existe uno PENDIENTE, suma la cantidad
+        if (existente != null) {
+            int nuevaCantidad = existente.getCantidad() + entity.getCantidad();
+            if (producto.getStock() < nuevaCantidad) {
+                throw new Exception("Stock insuficiente. Disponible: " + producto.getStock());
+            }
+            existente.setCantidad(nuevaCantidad);
+            existente.setTotal(producto.getPrecio() * nuevaCantidad);
+            existente.setEstado(EstadoCarrito.PENDIENTE); // Refuerza el estado
+            return carBuyRepository.save(existente);
+        } else {
+            // Si no existe PENDIENTE, crea uno nuevo
+            if (producto.getStock() < entity.getCantidad()) {
+                throw new Exception("Stock insuficiente. Disponible: " + producto.getStock());
+            }
+            entity.setId(null); // <-- IMPORTANTE: fuerza a crear uno nuevo
+            entity.setTotal(producto.getPrecio() * entity.getCantidad());
+            entity.setEstado(EstadoCarrito.PENDIENTE); // Siempre PENDIENTE
+            return carBuyRepository.save(entity);
+        }
+    }
+}
+```
+
+# modulo Mesa.
 ### Funcionalidad
 este modulo implementa la mesa  para los clientes. A continuacion se documentan los archivos principales del modulo.
 
@@ -734,7 +1266,7 @@ implementacion del Servicio con la lógica de negocio para el manejo de las mesa
 
 
 
-## modulo pago_reserva
+# modulo pago_reserva
 ### Funcionalidad
 este modulo implementa el pago de la reserva para los clientes. A continuacion se documentan los archivos principales del modulo.
 ### Estructura
