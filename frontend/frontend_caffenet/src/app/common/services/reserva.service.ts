@@ -10,6 +10,7 @@ import { ApiResponseDto } from '../interfaces/api-response-dto';
   providedIn: 'root'
 })
 export class ReservaService {
+  
   private baseUrl = `${API_BASE_URL}/v1/reserva`;
 
   constructor(private http: HttpClient) { }
@@ -36,5 +37,8 @@ export class ReservaService {
 
   getReservaByCodigo(codigo: string): Observable<Reserva> {
     return this.http.get<Reserva>(`${this.baseUrl}/by-codigo`, { params: { codigo } });
+  }
+  delete(id: number): Observable<ApiResponseDto<Reserva>> {
+    return this.http.delete<ApiResponseDto<Reserva>>(`${this.baseUrl}/${id}`);
   }
 }

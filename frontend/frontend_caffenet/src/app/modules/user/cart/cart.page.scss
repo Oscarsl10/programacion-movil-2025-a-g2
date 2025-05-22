@@ -97,3 +97,29 @@ ion-app, ion-content, ion-footer, app-bottom-bar {
   --background: #1e172d !important;
   background: #1e172d !important;
 }
+::ng-deep .custom-toast {
+  --background: #7a2239;  /* Rojo vino */
+  --color: #f4e1c1;        /* Crema */
+  border: 2px solid #e0b354; /* Dorado */
+  font-weight: bold;
+  text-align: center;
+}
+.carrito-vacio {
+  text-align: center;
+  padding: 2rem;
+  color: #f4e1c1; // Crema para el texto
+  background-color: #7a2239; // Rojo vino como fondo
+  border-radius: 12px;
+  margin: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  ion-icon {
+    font-size: 3rem;
+    color: #e0b354; // Dorado para el ícono
+  }
+}

@@ -1,6 +1,7 @@
 import { Mesa } from './mesa';
 
 export interface Reserva {
+  email: string;
   id?: number;
   fechaInicio: Date;
   fechaFin: Date;

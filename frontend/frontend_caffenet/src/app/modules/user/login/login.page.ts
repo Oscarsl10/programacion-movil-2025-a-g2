@@ -16,6 +16,7 @@ import { UsuarioService } from 'src/app/common/services/usuario.service';
   imports: [IonicModule, CommonModule, FormsModule, HttpClientModule, RouterLink],
 })
 export class LoginPage {
+  alertButtons = ['Action'];
  userId: string = '';
   password: string = '';
   successMessage = '';

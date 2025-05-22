@@ -1,0 +1,490 @@
+/* Fondo general */
+ion-content {
+  --background: linear-gradient(to bottom, #1e172d, #2d223c);
+  --padding-bottom: 70px;
+}
+
+/* Header y Toolbar */
+ion-header {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+ion-toolbar {
+  --background: #1e172d;
+  --color: #f4e1c1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+ion-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+/* Mensajes de estado */
+.ion-text-center {
+  margin: 16px 0;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.ion-text-center ion-text[color="success"] {
+  background: rgba(40, 167, 69, 0.1);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  color: #28a745;
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.ion-text-center ion-text[color="danger"] {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #dc3545;
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+/* Items de formulario */
+ion-item {
+  --background: #2d223c;
+  --border-color: #7a2239;
+  --highlight-color-focused: #e0b354;
+  --color: #f4e1c1;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  --border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+}
+
+ion-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Labels */
+ion-label {
+  color: #f4e1c1 !important;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs */
+ion-input {
+  color: #f4e1c1;
+  --placeholder-color: #b6a9c9;
+  --placeholder-opacity: 0.7;
+  font-size: 1rem;
+}
+
+ion-input::part(native) {
+  background: transparent;
+}
+
+/* Select */
+ion-select {
+  color: #f4e1c1;
+  --placeholder-color: #b6a9c9;
+}
+
+ion-select::part(icon) {
+  color: #e0b354;
+}
+
+/* Botones principales */
+ion-button {
+  --background: #7a2239;
+  --background-hover: #8f2944;
+  --background-activated: #651c30;
+  --color: #f4e1c1;
+  --border-radius: 12px;
+  --box-shadow: 0 4px 12px rgba(122, 34, 57, 0.4);
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  height: 48px;
+  margin: 8px 0;
+  text-transform: none;
+  transition: all 0.3s ease;
+}
+
+/* Botón primary específico */
+ion-button[color="primary"] {
+  --background: #7a2239;
+  --background-hover: #8f2944;
+  --background-activated: #651c30;
+  --color: #f4e1c1;
+}
+
+ion-button:hover {
+  transform: translateY(-2px);
+  --box-shadow: 0 6px 16px rgba(122, 34, 57, 0.6);
+}
+
+/* Botón de generar factura */
+ion-button[color="success"] {
+  --background: #e0b354;
+  --background-hover: #d4a843;
+  --background-activated: #c49732;
+  --color: #1e172d;
+  --box-shadow: 0 4px 12px rgba(224, 179, 84, 0.3);
+}
+
+ion-button[color="success"]:hover {
+  --box-shadow: 0 6px 16px rgba(224, 179, 84, 0.5);
+}
+
+/* Botón tertiary (factura general) */
+ion-button[color="tertiary"] {
+  --background: linear-gradient(135deg, #e0b354, #d4a843);
+  --background-hover: linear-gradient(135deg, #d4a843, #c49732);
+  --color: #1e172d;
+  --box-shadow: 0 4px 12px rgba(224, 179, 84, 0.4);
+  font-size: 1.1rem;
+  height: 52px;
+  margin-top: 20px;
+}
+
+/* Tarjetas */
+ion-card {
+  background: #3b2d4a;
+  border-radius: 16px;
+  margin: 16px 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(224, 179, 84, 0.1);
+}
+
+ion-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  border-color: rgba(224, 179, 84, 0.3);
+}
+
+ion-card-header {
+  background: linear-gradient(135deg, #7a2239, #8f2944);
+  padding: 20px;
+  position: relative;
+}
+
+ion-card-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e0b354, transparent, #e0b354);
+}
+
+ion-card-title {
+  color: #f4e1c1;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+ion-card-content {
+  padding: 24px;
+  background: #3b2d4a;
+}
+
+ion-card-content p {
+  color: #f4e1c1;
+  margin: 8px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+ion-card-content strong {
+  color: #e0b354;
+  font-weight: 600;
+}
+
+/* Listas */
+ion-list {
+  background: transparent;
+  padding: 0;
+  margin-top: 16px;
+}
+
+ion-list-header {
+  background: linear-gradient(135deg, #2d223c, #3b2d4a);
+  color: #e0b354;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(224, 179, 84, 0.2);
+}
+
+/* Items de lista específicos para pedidos */
+ion-list ion-item {
+  background: linear-gradient(135deg, #2d223c, #342947);
+  margin-bottom: 12px;
+  border: 1px solid rgba(122, 34, 57, 0.3);
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 16px;
+  --padding-bottom: 16px;
+}
+
+ion-list ion-item ion-label {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Texto sin datos */
+.no-data-message {
+  color: #b6a9c9;
+  font-style: italic;
+  font-size: 1.1rem;
+  padding: 40px;
+  text-align: center;
+  background: rgba(59, 45, 74, 0.3);
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 1px dashed rgba(182, 169, 201, 0.3);
+}
+
+/* Estilos responsivos */
+@media screen and (min-width: 768px) {
+  .ion-padding {
+    padding: 24px 32px;
+  }
+  
+  ion-card {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  ion-item {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+  }
+  
+  ion-button[expand="full"] {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  ion-title {
+    font-size: 1.4rem;
+  }
+  
+  ion-card-content {
+    padding: 16px;
+  }
+  
+  ion-button {
+    height: 44px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Animaciones suaves */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ion-card,
+ion-item,
+.ion-text-center {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Estados de carga */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  color: #b6a9c9;
+}
+
+/* Separadores visuales */
+.section-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #7a2239, transparent);
+  margin: 24px 0;
+  border-radius: 1px;
+}
+
+// Contenedor principal de la factura general
+.invoice-general-content {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  background: #fff;
+  z-index: 9999;
+  min-width: 400px;
+  color: #000;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  line-height: 1.4;
+
+  // Título principal
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+  }
+
+  // Información del usuario (párrafos directos)
+  p {
+    margin: 8px 0;
+    font-size: 14px;
+    
+    strong {
+      color: #333;
+      font-weight: 600;
+    }
+  }
+
+  // Tabla de productos (tabla directa)
+      .invoice-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    thead {
+      tr {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        
+        th {
+          border: 1px solid #0056b3;
+          padding: 12px 8px;
+          color: #fff;
+          font-weight: 600;
+          text-align: left;
+          font-size: 14px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        &:nth-child(even) {
+          background-color: #f8f9fa;
+        }
+
+        &:hover {
+          background-color: #e9ecef;
+        }
+
+        td {
+          border: 1px solid #dee2e6;
+          padding: 10px 8px;
+          font-size: 13px;
+          vertical-align: middle;
+
+          &:first-child {
+            font-weight: 500;
+            color: #495057;
+          }
+
+          &:nth-child(2) {
+            text-align: center;
+            font-weight: 600;
+            color: #007bff;
+          }
+
+          &:last-child {
+            text-align: right;
+            font-weight: 600;
+            color: #28a745;
+          }
+        }
+      }
+    }
+  }
+
+  // Total general (si se agrega)
+  .total-section {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #007bff;
+    text-align: right;
+
+    .total-amount {
+      font-size: 18px;
+      font-weight: bold;
+      color: #28a745;
+      margin-top: 10px;
+    }
+  }
+
+  // Pie de página
+  .invoice-footer {
+    margin-top: 30px;
+    padding-top: 15px;
+    border-top: 1px solid #dee2e6;
+    text-align: center;
+    font-size: 12px;
+    color: #6c757d;
+  }
+}
+
+// Versión para impresión
+@media print {
+  .invoice-general-content {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    z-index: auto !important;
+    min-width: auto !important;
+    width: 100% !important;
+    padding: 0 !important;
+    
+    h2 {
+      page-break-after: avoid;
+    }
+    
+    .invoice-table {
+      page-break-inside: avoid;
+      
+      thead {
+        display: table-header-group;
+      }
+      
+      tbody {
+        tr {
+          page-break-inside: avoid;
+        }
+      }
+    }
+  }
+}

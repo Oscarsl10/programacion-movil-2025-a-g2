@@ -10,4 +10,6 @@ import com.corhuila.Backend_CaffeNet.modules.comprobante.Entity.Comprobante;
 public interface ICarBuyRepository extends IBaseRepository<CarBuy, Long> {
 
     List<CarBuy> findByProductoIdAndEstado(Long productoId, EstadoCarrito estado);
+
+    List<CarBuy> findByUserEmailAndProductoIdAndEstado(String email, Long productoId, EstadoCarrito estado);
 }

@@ -15,7 +15,7 @@ ion-content {
     background-color: #252028;
     width: 80px;
     height: 80px;
-    border-radius: 15px;
+    border-radius: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -23,8 +23,9 @@ ion-content {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     
     img {
-      width: 40px;
-      height: 40px;
+      border-radius: 50%;
+      width: 500px;
+      height: 80px;
     }
   }
   

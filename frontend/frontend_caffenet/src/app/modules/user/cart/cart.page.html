@@ -4,12 +4,6 @@
   </ion-toolbar>
 </ion-header>
 
-<div *ngIf="errors.length > 0">
-  <div *ngFor="let error of errors" class="alert alert-danger" role="alert">
-    {{ error }}
-  </div>
-</div>
-
 <ion-content>
   <ion-list *ngIf="carrito.length > 0; else carritoVacio">
     <ion-item *ngFor="let item of carrito" style="--background: #2d223c; color: #f4e1c1;">
@@ -58,10 +52,12 @@
   </ion-card>
 
   <ng-template #carritoVacio>
-    <ion-text color="medium">
-      <p class="ion-text-center">Tu carrito está vacío.</p>
-    </ion-text>
-  </ng-template>
+  <div class="carrito-vacio">
+    <h2>Tu carrito está vacío</h2>
+    <ion-icon name="cart-outline"></ion-icon>
+  </div>
+</ng-template>
+
 </ion-content>
 
 <app-bottom-bar></app-bottom-bar>

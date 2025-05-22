@@ -3,15 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DetailOrder } from 'src/app/common/interfaces/user/detail-order';
 import { DetailOrderService } from 'src/app/common/services/detail-order.service';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { Usuario } from 'src/app/common/interfaces/user/usuario';
 import { UsuarioService } from 'src/app/common/services/usuario.service';
 import { CarBuyService } from 'src/app/common/services/car-buy.service';
 import { Router } from '@angular/router';
 import { BottomBarComponent } from "../../../shared/components/user/bottom-bar/bottom-bar.component";
-import { AlertController } from '@ionic/angular';
-
-
+import { AuthUserService } from 'src/app/common/services/authUserService';
 
 @Component({
   selector: 'app-detail-order',
@@ -20,7 +18,7 @@ import { AlertController } from '@ionic/angular';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, BottomBarComponent]
 })
-export class DetailOrderPage implements OnInit {
+export class DetailOrderPage {
   carrito: any[] = [];
   usuario!: Usuario;
   totalGeneral: number = 0;
@@ -31,11 +29,12 @@ export class DetailOrderPage implements OnInit {
     private detailOrderService: DetailOrderService,
     private carBuyService: CarBuyService,
     private router: Router,
-    private alertController: AlertController   // <- Inyectamos el AlertController
-
+    private toastController: ToastController,
+    private authUserService: AuthUserService
   ) { }
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
+    this.authUserService.requireLogin(); // Verifica si el usuario está logueado
     const carritoGuardado = sessionStorage.getItem('carrito');
     if (carritoGuardado) {
       this.carrito = JSON.parse(carritoGuardado);
@@ -51,14 +50,23 @@ export class DetailOrderPage implements OnInit {
     }
   }
 
-  
+  async mostrarToast(mensaje: string, color: 'success' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2000,
+      color,
+      position: 'bottom',
+    });
+    await toast.present();
+  }
+
   async confirmarPedido(): Promise<void> {
     if (!this.usuario || this.carrito.length === 0) {
       this.errors.push('No hay usuario o carrito vacío.');
+      await this.mostrarToast('No hay usuario o carrito vacío.', 'danger');
       return;
     }
 
-    // Vamos a guardar todos los observables para esperar a que terminen todos
     const saves = this.carrito.map(item => {
       if (!item.id) {
         this.errors.push('Falta el ID del carBuy para uno de los productos.');
@@ -87,25 +95,17 @@ export class DetailOrderPage implements OnInit {
 
     try {
       await Promise.all(saves);
+      await this.mostrarToast('Pedido confirmado con éxito');
 
-      const alert = await this.alertController.create({
-        header: 'Pedido confirmado',
-        message: 'Tu pedido se ha realizado con éxito.',
-        buttons: [
-          {
-            text: 'OK',
-            handler: () => {
-              this.router.navigate(['/mainmenu']);
-            }
-          }
-        ]
-      });
-
-      await alert.present();
+      // Redirige tras pequeño retraso para permitir ver el toast
+      setTimeout(() => {
+        this.router.navigate(['/mainmenu']);
+      }, 1000);
 
     } catch (error) {
       this.errors.push('Error al guardar los detalles del pedido.');
       console.error(error);
+      await this.mostrarToast('Error al confirmar pedido.', 'danger');
     }
   }
 }

@@ -15,7 +15,6 @@ import jakarta.transaction.Transactional;
 import com.corhuila.Backend_CaffeNet.common.base.IBaseRepository;
 import com.corhuila.Backend_CaffeNet.modules.detalle_pedido.IRepository.IDetalle_PedidoRepository;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,23 +40,23 @@ public class Detalle_PedidoService extends ABaseService<Detalle_Pedido> implemen
     public Detalle_Pedido save(Detalle_Pedido entity) throws Exception {
         // 1) Cargar entidades
         CarBuy car = carBuyRepository.findById(entity.getCarBuy().getId())
-            .orElseThrow(() -> new Exception("CarBuy no encontrado"));
+                .orElseThrow(() -> new Exception("CarBuy no encontrado"));
         Producto producto = productoRepository.findById(entity.getProducto().getId())
-            .orElseThrow(() -> new Exception("Producto no encontrado"));
+                .orElseThrow(() -> new Exception("Producto no encontrado"));
 
         // 2) Validar stock
         int qty = car.getCantidad();
         if (producto.getStock() < qty) {
             throw new Exception("Stock insuficiente para procesar pedido. Disponible: "
-                                + producto.getStock());
+                    + producto.getStock());
         }
 
         // 3) Descontar stock
         producto.setStock(producto.getStock() - qty);
         productoRepository.save(producto);
 
-        // 4) Marcar carrito como COMPRADO
-        car.setEstado(com.corhuila.Backend_CaffeNet.modules.car_buys.Enum.EstadoCarrito.COMPRADO);
+        // 4) Cambia el estado a SOLICITADO
+        car.setEstado(EstadoCarrito.SOLICITADO);
         carBuyRepository.save(car);
 
         // 5) Fijar fecha de emisión

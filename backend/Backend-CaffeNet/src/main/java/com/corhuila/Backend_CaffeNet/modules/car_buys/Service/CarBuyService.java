@@ -34,8 +34,10 @@ public class CarBuyService extends ABaseService<CarBuy> implements ICarBuyServic
         try {
             List<CarBuy> carBuys = carBuyRepository.findAll();
             for (CarBuy carBuy : carBuys) {
-                carBuy.setEstado(EstadoCarrito.COMPRADO); // o INACTIVO si tienes ese estado
-                carBuyRepository.save(carBuy);
+                if (carBuy.getEstado() == EstadoCarrito.SOLICITADO) {
+                    carBuy.setEstado(EstadoCarrito.SOLICITADO);
+                    carBuyRepository.save(carBuy);
+                }
             }
         } catch (Exception e) {
             throw new RuntimeException("Error al limpiar el carrito: " + e.getMessage());
@@ -43,11 +45,10 @@ public class CarBuyService extends ABaseService<CarBuy> implements ICarBuyServic
     }
 
     public void deleteById(Long id) {
-        if (carBuyRepository.existsById(id)) {
-            carBuyRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Producto con ID " + id + " no encontrado.");
-        }
+        CarBuy carBuy = carBuyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto con ID " + id + " no encontrado."));
+        carBuy.setEstado(EstadoCarrito.RETIRADO); // Cambia a RETIRADO
+        carBuyRepository.save(carBuy);
     }
 
     @Override
@@ -57,14 +58,17 @@ public class CarBuyService extends ABaseService<CarBuy> implements ICarBuyServic
                 .findById(entity.getProducto().getId())
                 .orElseThrow(() -> new Exception("Producto no encontrado"));
 
-        // Busca si ya hay un CarBuy ACTIVO para este producto
+        // Busca si ya hay un CarBuy PENDIENTE para este producto y usuario
         CarBuy existente = carBuyRepository
-                .findByProductoIdAndEstado(entity.getProducto().getId(), EstadoCarrito.ACTIVO)
+                .findByUserEmailAndProductoIdAndEstado(
+                        entity.getUser().getEmail(),
+                        entity.getProducto().getId(),
+                        EstadoCarrito.PENDIENTE)
                 .stream()
                 .findFirst()
                 .orElse(null);
 
-        // Si existe uno ACTIVO, suma la cantidad
+        // Si existe uno PENDIENTE, suma la cantidad
         if (existente != null) {
             int nuevaCantidad = existente.getCantidad() + entity.getCantidad();
             if (producto.getStock() < nuevaCantidad) {
@@ -72,15 +76,16 @@ public class CarBuyService extends ABaseService<CarBuy> implements ICarBuyServic
             }
             existente.setCantidad(nuevaCantidad);
             existente.setTotal(producto.getPrecio() * nuevaCantidad);
+            existente.setEstado(EstadoCarrito.PENDIENTE); // Refuerza el estado
             return carBuyRepository.save(existente);
         } else {
-            // Si no existe ACTIVO, crea uno nuevo (aunque haya uno COMPRADO)
+            // Si no existe PENDIENTE, crea uno nuevo
             if (producto.getStock() < entity.getCantidad()) {
                 throw new Exception("Stock insuficiente. Disponible: " + producto.getStock());
             }
             entity.setId(null); // <-- IMPORTANTE: fuerza a crear uno nuevo
             entity.setTotal(producto.getPrecio() * entity.getCantidad());
-            entity.setEstado(EstadoCarrito.ACTIVO);
+            entity.setEstado(EstadoCarrito.PENDIENTE); // Siempre PENDIENTE
             return carBuyRepository.save(entity);
         }
     }

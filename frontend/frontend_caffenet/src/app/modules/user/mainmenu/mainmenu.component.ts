@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductCardComponent } from 'src/app/shared/components/product-card/product-card.component';
@@ -6,13 +6,11 @@ import { BottomBarComponent } from 'src/app/shared/components/user/bottom-bar/bo
 import { ProductoService } from 'src/app/common/services/producto.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Producto } from 'src/app/common/interfaces/admin/producto';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { carBuy } from 'src/app/common/interfaces/user/carBuy';
 import { CarBuyService } from 'src/app/common/services/car-buy.service';
 import { AuthUserService } from 'src/app/common/services/authUserService';
-import { Usuario } from 'src/app/common/interfaces/user/usuario';
-
 
 @Component({
   selector: 'app-mainmenu',
@@ -25,14 +23,14 @@ export class MainmenuComponent {
   cafes: Producto[] = [];
   cafesFiltrados: Producto[] = [];
 
-
   constructor(
     private productoService: ProductoService,
     private carBuyService: CarBuyService,
-    private authUserService: AuthUserService
+    private authUserService: AuthUserService,
+    private toastController: ToastController
   ) { }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.authUserService.requireLogin(); // Verifica si el usuario está logueado
     this.cargarProductos();
   }
@@ -55,16 +53,28 @@ export class MainmenuComponent {
     );
   }
 
+  async mostrarToast(mensaje: string, color: 'success' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message: mensaje,
+      duration: 2000,
+      color,
+      position: 'bottom',
+    });
+    await toast.present();
+  }
+
   agregarAlCarrito(producto: Producto) {
     if (!producto.id) {
       console.error('Producto sin id, no se puede agregar al carrito');
       return;
     }
 
+    const email = sessionStorage.getItem('email') || '';
+    const full_name = sessionStorage.getItem('full_name') || '';
+
     this.carBuyService.getAll().subscribe({
       next: (res) => {
         const carrito: carBuy[] = res.data || [];
-        // SOLO busca productos con estado ACTIVO
         const itemExistente = carrito.find(
           item => item.producto?.id === producto.id && item.estado === 'ACTIVO'
         );
@@ -75,9 +85,8 @@ export class MainmenuComponent {
           const cantidadActual = itemExistente.cantidad ?? 0;
           const nuevaCantidad = cantidadActual + cantidadAAgregar;
 
-          // Validar stock
           if (producto.stock !== undefined && nuevaCantidad > producto.stock) {
-            alert(`No puedes agregar más de ${producto.stock} unidades de este producto.`);
+            this.mostrarToast(`No puedes agregar más de ${producto.stock} unidades de este producto.`, 'danger');
             return;
           }
 
@@ -86,18 +95,26 @@ export class MainmenuComponent {
           const itemActualizado: carBuy = {
             ...itemExistente,
             cantidad: nuevaCantidad,
-            total: nuevoTotal
+            total: nuevoTotal,
+            user: {
+              email: itemExistente.user?.email || email,
+              full_name: itemExistente.user?.full_name || full_name
+            }
           };
 
           this.carBuyService.update(itemExistente.id!, itemActualizado).subscribe({
-            next: () => console.log('Cantidad actualizada en el carrito'),
-            error: err => console.error('Error actualizando cantidad', err)
+            next: () => {
+              this.mostrarToast('Cantidad actualizada en el carrito');
+            },
+            error: err => {
+              console.error('Error actualizando cantidad', err);
+              this.mostrarToast('Error actualizando cantidad', 'danger');
+            }
           });
 
         } else {
-          // Validar stock antes de crear nuevo ítem
           if (producto.stock !== undefined && cantidadAAgregar > producto.stock) {
-            alert(`No puedes agregar más de ${producto.stock} unidades de este producto.`);
+            this.mostrarToast(`No puedes agregar más de ${producto.stock} unidades de este producto.`, 'danger');
             return;
           }
 
@@ -113,20 +130,29 @@ export class MainmenuComponent {
               stock: producto.stock,
             },
             total: producto.precio * cantidadAAgregar,
+            user: {
+              email,
+              full_name
+            }
           };
 
-          // Asegúrate de NO enviar id
           delete (nuevoItem as any).id;
 
           this.carBuyService.save(nuevoItem).subscribe({
-            next: () => console.log('Producto añadido al carrito'),
-            error: err => console.error('Error agregando producto', err)
+            next: () => {
+              this.mostrarToast('Producto añadido al carrito');
+            },
+            error: err => {
+              console.error('Error agregando producto', err);
+              this.mostrarToast('Error agregando producto', 'danger');
+            }
           });
         }
       },
-      error: err => console.error('Error consultando carrito', err)
+      error: err => {
+        console.error('Error consultando carrito', err);
+        this.mostrarToast('Error consultando carrito', 'danger');
+      }
     });
   }
-
-
 }
