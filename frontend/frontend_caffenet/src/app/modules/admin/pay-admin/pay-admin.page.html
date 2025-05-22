@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title>Gestión de Facturas</ion-title>
+    <ion-title>Pagos productos</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -39,7 +39,7 @@
   <div *ngIf="detalles.length > 0">
     <ion-item>
       <ion-label position="floating">Método de pago</ion-label>
-      <ion-select [(ngModel)]="metodoPago">
+      <ion-select [(ngModel)]="metodo_Pago">
         <ion-select-option value="Efectivo">Efectivo</ion-select-option>
         <ion-select-option value="Tarjeta">Tarjeta</ion-select-option>
         <ion-select-option value="Transferencia">Transferencia</ion-select-option>
@@ -57,15 +57,51 @@
           Cantidad: {{ detalle.carBuy?.cantidad ? detalle.carBuy.cantidad : 'Cantidad no disponible' }}
           Total: {{ detalle.carBuy?.total | currency:'COP' }}
         </ion-label>
-        <ion-button color="success" (click)="generarPago(detalle)">Generar factura</ion-button>
       </ion-item>
     </ion-list>
+
+    <!-- Total a pagar debajo de la lista -->
+    <ion-item lines="none">
+      <ion-label class="ion-text-end" style="font-weight:bold;">
+        Total a pagar:
+      </ion-label>
+      <ion-note slot="end" color="primary" style="font-weight:bold;">
+        {{ totalAPagar | currency:'COP' }}
+      </ion-note>
+    </ion-item>
+
     <ion-button expand="full" color="tertiary" (click)="generarFacturaGeneral()"
-      *ngIf="detalles.length > 0 && metodoPago">
+      *ngIf="detalles.length > 0 && metodo_Pago">
       Generar factura general
     </ion-button>
-
   </div>
 
 </ion-content>
+<!-- Contenido oculto para la factura general (usado para el PDF) -->
+<div *ngIf="mostrarFacturaGeneral" #invoiceGeneralContent class="invoice-general-content">
+  <h2 style="text-align:center;">Factura General</h2>
+  <p><strong>Nombre:</strong> {{ usuario?.full_name }}</p>
+  <p><strong>Email:</strong> {{ usuario?.email }}</p>
+  <p><strong>Método de pago:</strong> {{ invoiceMetodoPago }}</p>
+
+  <table style="width:100%; border-collapse: collapse; margin-top: 10px;">
+    <thead>
+      <tr>
+        <th style="border:1px solid #000; padding:4px; background:#eee;">Producto</th>
+        <th style="border:1px solid #000; padding:4px; background:#eee;">Cantidad</th>
+        <th style="border:1px solid #000; padding:4px; background:#eee;">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let detalle of detalles">
+        <td style="border:1px solid #000; padding:4px;">{{ detalle.carBuy?.producto?.nombre }}</td>
+        <td style="border:1px solid #000; padding:4px;">{{ detalle.carBuy?.cantidad }}</td>
+        <td style="border:1px solid #000; padding:4px;">{{ detalle.carBuy?.total | currency:' COP  ' }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="text-align:right; font-weight:bold; margin-top:10px;">
+    Total a pagar: {{ totalAPagar | currency:' COP  ' }}
+  </p>
+</div>
 <app-bottom-bar-admin></app-bottom-bar-admin>

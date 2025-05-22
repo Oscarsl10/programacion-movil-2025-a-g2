@@ -14,11 +14,11 @@ import { IonicModule } from '@ionic/angular';
   standalone: true,
   imports: [CommonModule, IonicModule, RouterModule, BottomBarAdminComponent], 
 })
-export class FacturationAdminPage implements OnInit {
+export class FacturationAdminPage {
 
   constructor(private authAdminService: AuthAdminService) { }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.authAdminService.requireLogin(); // Verifica si el usuario está logueado
   }
 }

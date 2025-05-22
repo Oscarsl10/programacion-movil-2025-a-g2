@@ -14,7 +14,7 @@ import { AuthAdminService } from 'src/app/common/services/authAdminService';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, BottomBarAdminComponent]
 })
-export class UsuariosAdminPage implements OnInit {
+export class UsuariosAdminPage {
 
   usuarios: Usuario[] = [];
   usuarioActualizado: Usuario = {
@@ -25,7 +25,7 @@ export class UsuariosAdminPage implements OnInit {
 
   constructor(private usuarioService: UsuarioService, private authAdminService: AuthAdminService) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.authAdminService.requireLogin(); // Verifica si el usuario está logueado
     this.cargarUsuarios();
   }

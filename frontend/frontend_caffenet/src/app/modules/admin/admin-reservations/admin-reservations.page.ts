@@ -8,6 +8,7 @@ import { Mesa } from 'src/app/common/interfaces/admin/mesa';
 import { MesaService } from 'src/app/common/services/mesa.service';
 import { ReservaService } from 'src/app/common/services/reserva.service';
 import { FormsModule } from '@angular/forms';
+import { AuthAdminService } from 'src/app/common/services/authAdminService';
 
 @Component({
   selector: 'app-admin-reservations',
@@ -16,7 +17,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, IonicModule, RouterModule, BottomBarAdminComponent, FormsModule]
 })
-export class AdminReservationsPage implements OnInit {
+export class AdminReservationsPage {
   mesas: Mesa[] = [];
   reservas: Reserva[] = [];
 
@@ -25,10 +26,12 @@ export class AdminReservationsPage implements OnInit {
 
   constructor(
     private mesaService: MesaService,
-    private reservaService: ReservaService
+    private reservaService: ReservaService,
+    private authAdminService: AuthAdminService
   ) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
+    this.authAdminService.requireLogin(); // Verifica si el usuario está logueado
     this.cargarMesas();
     this.cargarReservas();
   }

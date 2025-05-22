@@ -18,7 +18,7 @@ import { AuthAdminService } from 'src/app/common/services/authAdminService';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule, BottomBarAdminComponent]
 })
-export class ProfileAdminPage implements OnInit {
+export class ProfileAdminPage {
 
    admin: Admin | null = null;
     errors: string[] = [];
@@ -34,7 +34,7 @@ export class ProfileAdminPage implements OnInit {
   
     ) {}
   
-    ngOnInit() {
+    ionViewWillEnter() {
       this.authAdminService.requireLogin(); // Verifica si el usuario está logueado
       const email = sessionStorage.getItem('adminEmail');
       if (email) {

@@ -15,8 +15,8 @@ export class PayOrderService extends BaseService<PayOrder> {
     super(http, 'v1/pago');  
   }
   
-
-
-
+  findAll(): Observable<PayOrder[]> {
+    return this.http.get<PayOrder[]>(`${this.apiUrl}`);
+  }
 
 }

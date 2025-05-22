@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Usuario } from 'src/app/common/interfaces/user/usuario';
@@ -9,8 +9,16 @@ import { PayOrderService } from 'src/app/common/services/pay-order.service';
 import { IonicModule } from '@ionic/angular';
 import { PayOrder } from 'src/app/common/interfaces/admin/pay-order';
 import { ApiResponseDto } from 'src/app/common/interfaces/api-response-dto';
-import jsPDF from 'jspdf';
 import { BottomBarAdminComponent } from "../../../shared/components/admin/bottom-bar-admin/bottom-bar-admin.component";
+import jsPDF from 'jspdf';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { FileOpener } from '@capacitor-community/file-opener';
+import { Capacitor } from '@capacitor/core';
+import { ToastController } from '@ionic/angular';
+import { AuthAdminService } from 'src/app/common/services/authAdminService';
+import html2canvas from 'html2canvas';
+import { ComprobanteService } from 'src/app/common/services/comprobante';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 @Component({
@@ -24,306 +32,229 @@ export class PayAdminPage implements OnInit {
   email: string = '';
   usuario?: Usuario;
   detalles: DetailOrder[] = [];
-  metodoPago: string = '';
+  metodo_Pago: string = '';
+  invoiceMetodoPago: string = '';
   mensaje: string = '';
   error: string = '';
+
+  @ViewChild('invoiceGeneralContent', { static: false }) invoiceGeneralContent!: ElementRef;
+
+  mostrarFacturaGeneral = false;
+  PayOrder: any;
 
   constructor(
     private usuarioService: UsuarioService,
     private detalleService: DetailOrderService,
-    private payOrderService: PayOrderService
+    private payOrderService: PayOrderService,
+    private toastController: ToastController,
+    private authAdminService: AuthAdminService,
+    private comprobanteService: ComprobanteService,
+    private cdr: ChangeDetectorRef
   ) { }
 
-  ngOnInit(): void { }
-
-  buscarPorEmail(): void {
-  this.error = '';
-  this.mensaje = '';
-  this.detalles = [];
-  this.usuario = undefined;
-
-  if (!this.email.trim()) {
-    this.error = 'Debe ingresar un correo electrónico.';
-    return;
+  ngOnInit(): void {
+    this.authAdminService.requireLogin();
   }
 
-  this.detalleService.getAll().subscribe({
-    next: (response: ApiResponseDto<DetailOrder[]>) => {
-      if (!response.data || response.data.length === 0) {
-        this.mensaje = 'No hay pedidos registrados.';
-        return;
-      }
-
-      // Filtrar detalles por email
-      const detallesFiltrados = response.data.filter(
-        detalle => detalle.users?.email === this.email.trim()
-      );
-
-      if (detallesFiltrados.length === 0) {
-        this.mensaje = 'El usuario no tiene pedidos confirmados.';
-        this.usuario = undefined;
-        return;
-      }
-
-      // Asignar usuario desde el primer pedido
-      this.usuario = detallesFiltrados[0].users;
-
-      // Agrupar por producto (usando ID de producto como clave)
-      const agrupados: { [key: string]: DetailOrder } = {};
-
-      detallesFiltrados.forEach((detalle) => {
-        const producto = detalle.carBuy?.producto;
-        if (!producto || !producto.id) return;
-
-        const idProducto = producto.id;
-
-        if (agrupados[idProducto]) {
-          // Sumar cantidad y total
-          agrupados[idProducto].carBuy!.cantidad! += detalle.carBuy?.cantidad ?? 0;
-          agrupados[idProducto].carBuy!.total! += detalle.carBuy?.total ?? 0;
-        } else {
-          // Clonar el detalle original
-          agrupados[idProducto] = {
-            ...detalle,
-            carBuy: { ...detalle.carBuy! }
-          };
-        }
-      });
-
-      // Convertir a arreglo para mostrar
-      this.detalles = Object.values(agrupados);
-    },
-
-    error: (err) => {
-      this.error = 'No se pudieron obtener los pedidos del usuario.';
-      console.error('Error detalles pedido:', err);
-    }
-  });
-}
-
-
-  generarPago(detalle: DetailOrder): void {
+  buscarPorEmail(): void {
     this.error = '';
     this.mensaje = '';
+    this.detalles = [];
+    this.usuario = undefined;
 
-    if (!this.metodoPago.trim()) {
-      this.error = 'Debe seleccionar un método de pago.';
+    if (!this.email.trim()) {
+      this.presentToast('Debe ingresar un correo electrónico.');
       return;
     }
 
-    if (!this.usuario) {
-      this.error = 'No hay usuario seleccionado.';
-      return;
-    }
+    this.detalleService.getAll().subscribe({
+      next: (response: ApiResponseDto<DetailOrder[]>) => {
+        if (!response.data || response.data.length === 0) {
+          this.presentToast('No hay pedidos registrados.', 'warning');
+          return;
+        }
 
-    const monto = detalle.carBuy?.total;
-    if (monto === undefined || monto === null) {
-      this.error = 'El detalle no tiene un monto válido.';
-      return;
-    }
+        const detallesFiltrados = response.data.filter(
+          detalle =>
+            detalle.users?.email === this.email.trim() &&
+            detalle.carBuy?.estado === 'SOLICITADO'
+        );
 
-    const nuevoPago: PayOrder = {
-      metodo_Pago: this.metodoPago.trim(),
-      detalle_pedido: detalle,
-      users: this.usuario,
-      monto: monto
-    };
+        if (detallesFiltrados.length === 0) {
+          this.presentToast('El usuario no tiene pedidos confirmados.', 'warning');
+          this.usuario = undefined;
+          return;
+        }
 
-    this.payOrderService.save(nuevoPago).subscribe({
-      next: () => {
-        this.mensaje = 'Factura generada correctamente.';
-        this.metodoPago = '';
+        this.usuario = detallesFiltrados[0].users;
 
-        this.generarPDF(detalle, nuevoPago); // ← Generar el PDF aquí
+        const agrupados: { [key: string]: DetailOrder } = {};
+
+        detallesFiltrados.forEach((detalle) => {
+          const producto = detalle.carBuy?.producto;
+          if (!producto || !producto.id) return;
+
+          const idProducto = producto.id;
+
+          if (agrupados[idProducto]) {
+            agrupados[idProducto].carBuy!.cantidad! += detalle.carBuy?.cantidad ?? 0;
+            agrupados[idProducto].carBuy!.total! += detalle.carBuy?.total ?? 0;
+          } else {
+            agrupados[idProducto] = {
+              ...detalle,
+              carBuy: { ...detalle.carBuy! }
+            };
+          }
+        });
+
+        this.detalles = Object.values(agrupados);
       },
 
       error: (err) => {
-        this.error = 'Error al generar la factura.';
-        console.error('Error al guardar pago:', err);
+        this.presentToast('No se pudieron obtener los pedidos del usuario.', 'danger');
+        console.error('Error detalles pedido:', err);
       }
     });
   }
 
-  private generarPDF(detalle: DetailOrder, pago: PayOrder): void {
-  const ancho = 58 * 2.83465; // 58 mm en puntos (≈ 164 pts)
-  const alto = 500; // Altura estimada, jsPDF extiende si es necesario
-
-  const doc = new jsPDF({
-    unit: 'pt',
-    format: [ancho, alto],
-    orientation: 'portrait'
-  });
-
-  const fecha = new Date().toLocaleDateString();
-  const producto = detalle.carBuy?.producto?.nombre ?? 'Producto';
-  const cantidad = detalle.carBuy?.cantidad ?? 0;
-  const precio = detalle.carBuy?.producto?.precio ?? 0;
-  const total = detalle.carBuy?.total ?? 0;
-
-  let y = 20;
-  doc.setFontSize(12);
-  doc.setTextColor(0);
-
-  // Encabezado
-  doc.text('CaffeNet', ancho / 2, y, { align: 'center' });
-  y += 16;
-  doc.setFontSize(10);
-  doc.text('Factura de venta', ancho / 2, y, { align: 'center' });
-  y += 14;
-  doc.text(`Fecha: ${fecha}`, 10, y);
-  y += 10;
-
-  // Cliente
-  doc.text(`Cliente: ${pago.users.full_name}`, 10, y);
-  y += 12;
-  doc.text(`Correo: ${pago.users.email}`, 10, y);
-  y += 12;
-  doc.text(`Pago: ${pago.metodo_Pago}`, 10, y);
-  y += 14;
-
-  // Separador
-  doc.setLineWidth(0.5);
-  doc.line(10, y, ancho - 10, y);
-  y += 10;
-
-  // Producto
-  doc.setFontSize(10);
-  doc.text(`Producto: ${producto}`, 10, y);
-  y += 12;
-  doc.text(`Cantidad: ${cantidad}`, 10, y);
-  y += 12;
-  doc.text(`Precio: $${precio.toLocaleString()}`, 10, y);
-  y += 12;
-  doc.text(`Total: $${total.toLocaleString()}`, 10, y);
-  y += 18;
-
-  // Total grande
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.text(`TOTAL A PAGAR`, 10, y);
-  y += 14;
-  doc.setFontSize(14);
-  doc.text(`$${pago.monto.toLocaleString()}`, ancho / 2, y, { align: 'center' });
-
-  y += 20;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Gracias por su compra', ancho / 2, y, { align: 'center' });
-
-  // Guardar como PDF
-  const fechaArchivo = new Date().toISOString().slice(0, 10);
-  doc.save(`Factura_${pago.users.email}_${fechaArchivo}.pdf`);
-}
-
-generarFacturaGeneral(): void {
-  this.error = '';
-  this.mensaje = '';
-
-  if (!this.metodoPago.trim()) {
-    this.error = 'Debe seleccionar un método de pago.';
-    return;
+  get totalAPagar(): number {
+    return this.detalles.reduce((sum, d) => sum + (d.carBuy?.total || 0), 0);
   }
 
-  if (!this.usuario) {
-    this.error = 'No hay usuario seleccionado.';
-    return;
-  }
+  async generarFacturaGeneral(): Promise<void> {
+    this.error = '';
+    this.mensaje = '';
 
-  if (this.detalles.length === 0) {
-    this.error = 'No hay pedidos para facturar.';
-    return;
-  }
+    // Validaciones
+    if (!this.metodo_Pago.trim()) {
+      this.presentToast('Debe seleccionar un método de pago.', 'warning');
+      return;
+    }
+    if (!this.usuario) {
+      this.presentToast('No hay usuario seleccionado.', 'warning');
+      return;
+    }
+    if (this.detalles.length === 0) {
+      this.presentToast('No hay pedidos para facturar.', 'danger');
+      return;
+    }
 
-  // Calcular total general
-  const montoTotal = this.detalles.reduce((sum, d) => sum + (d.carBuy?.total ?? 0), 0);
+    // Guardamos el método para la factura
+    const metodoPagoActual = this.metodo_Pago.trim();
+    this.invoiceMetodoPago = metodoPagoActual;
 
-  const pagoGeneral: PayOrder = {
-    metodo_Pago: this.metodoPago.trim(),
-    detalle_pedido: this.detalles[0], // Se requiere uno para guardar. Lo importante es el usuario.
-    users: this.usuario,
-    monto: montoTotal
-  };
+    // Preparamos los objetos PayOrder a enviar
+    const pagos: PayOrder[] = this.detalles.map(detalle => ({
+      metodo_Pago: metodoPagoActual,
+      detalle_pedido: detalle,
+      users: this.usuario!,
+      monto: detalle.carBuy?.total ?? 0
+    }));
 
-  this.payOrderService.save(pagoGeneral).subscribe({
-    next: () => {
-      this.mensaje = 'Factura general generada correctamente.';
-      this.metodoPago = '';
-      this.generarPDFGeneral(this.detalles, pagoGeneral);
-    },
-    error: (err) => {
-      this.error = 'Error al generar la factura general.';
+    try {
+      // 1) Guardar cada pago
+      const respuestasGuardado = await Promise.all(
+        pagos.map(pago => this.payOrderService.save(pago).toPromise())
+      );
+
+      // 2) Generar comprobantes para cada pago guardado
+      await Promise.all(
+        respuestasGuardado.map((res: any) => {
+          const pagoId = res.data?.id;
+          return pagoId
+            ? this.comprobanteService.generarComprobante(Number(pagoId)).toPromise()
+            : Promise.resolve(null);
+        })
+      );
+
+      // 3) Feedback al usuario
+      this.presentToast('Factura general y comprobantes generados correctamente.', 'success');
+
+      // 4) Exportar PDF y esperar a que termine
+      await this.exportPDFAndOpen();
+
+      // 5) Limpiar formulario
+      this.metodo_Pago = '';
+      this.invoiceMetodoPago = '';
+
+    } catch (err) {
+      this.presentToast('Error al generar la factura general o comprobantes.', 'danger');
       console.error('Error factura general:', err);
     }
-  });
-}
-private generarPDFGeneral(detalles: DetailOrder[], pago: PayOrder): void {
-  const ancho = 58 * 2.83465;
-  const alto = 800;
+  }
 
-  const doc = new jsPDF({
-    unit: 'pt',
-    format: [ancho, alto],
-    orientation: 'portrait'
-  });
+  async exportPDFAndOpen() {
+    this.mostrarFacturaGeneral = true;
+    await new Promise(resolve => setTimeout(resolve, 300)); // Aumenta el tiempo de espera
+    this.cdr.detectChanges();
 
-  const fecha = new Date().toLocaleDateString();
+    console.log('Método de pago antes de exportar:', this.metodo_Pago); // Depuración
 
-  let y = 20;
-  doc.setFontSize(12);
-  doc.text('CaffeNet', ancho / 2, y, { align: 'center' });
-  y += 16;
-  doc.setFontSize(10);
-  doc.text('Factura General de Compra', ancho / 2, y, { align: 'center' });
-  y += 14;
-  doc.text(`Fecha: ${fecha}`, 10, y);
-  y += 10;
-  doc.text(`Cliente: ${pago.users.full_name}`, 10, y);
-  y += 12;
-  doc.text(`Correo: ${pago.users.email}`, 10, y);
-  y += 12;
-  doc.text(`Pago: ${pago.metodo_Pago}`, 10, y);
-  y += 14;
+    const element = this.invoiceGeneralContent?.nativeElement;
+    if (!element) {
+      this.presentToast('No se encontró el contenido de la factura general.', 'danger');
+      this.mostrarFacturaGeneral = false;
+      return;
+    }
 
-  doc.setLineWidth(0.5);
-  doc.line(10, y, ancho - 10, y);
-  y += 10;
+    function arrayBufferToBase64(buffer: ArrayBuffer): string {
+      let binary = '';
+      const bytes = new Uint8Array(buffer);
+      const len = bytes.byteLength;
+      for (let i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return window.btoa(binary);
+    }
 
-  doc.setFontSize(10);
-  detalles.forEach((detalle, index) => {
-    const producto = detalle.carBuy?.producto?.nombre ?? 'Producto';
-    const cantidad = detalle.carBuy?.cantidad ?? 0;
-    const precio = detalle.carBuy?.producto?.precio ?? 0;
-    const total = detalle.carBuy?.total ?? 0;
+    try {
+      const canvas = await html2canvas(element, { scale: 1.5, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a5');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const margin = 10;
+      const usableWidth = pageWidth - 2 * margin;
+      const imgProps = pdf.getImageProperties(imgData);
+      const imgHeight = (imgProps.height * usableWidth) / imgProps.width;
 
-    doc.text(`${index + 1}. ${producto}`, 10, y);
-    y += 12;
-    doc.text(`Cantidad: ${cantidad}`, 10, y);
-    doc.text(`Precio: $${precio.toLocaleString()}`, ancho / 2, y);
-    y += 12;
-    doc.text(`Subtotal: $${total.toLocaleString()}`, 10, y);
-    y += 14;
-  });
+      pdf.addImage(imgData, 'PNG', margin, 10, usableWidth, imgHeight);
+      const fileName = `Factura_General_${this.usuario?.email || 'usuario'}_${new Date().toISOString().slice(0, 10)}.pdf`;
 
-  y += 10;
-  doc.setLineWidth(0.5);
-  doc.line(10, y, ancho - 10, y);
-  y += 16;
+      if (Capacitor.isNativePlatform()) {
+        const pdfOutput = pdf.output('arraybuffer');
+        const base64Data = arrayBufferToBase64(pdfOutput as ArrayBuffer);
+        const saved = await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Documents,
+          recursive: true
+        });
+        try {
+          await FileOpener.open({
+            filePath: saved.uri,
+            contentType: 'application/pdf'
+          });
+        } catch (e) {
+          this.presentToast('No se pudo abrir el PDF. Instala un visor de PDF en tu dispositivo.', 'danger');
+        }
+      } else {
+        pdf.save(fileName);
+      }
+    } catch (err) {
+      this.presentToast('Error generando el PDF.', 'danger');
+      console.error('Error generando PDF:', err);
+    } finally {
+      this.mostrarFacturaGeneral = false;
+    }
+  }
 
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'bold');
-  doc.text(`TOTAL A PAGAR`, 10, y);
-  y += 14;
-  doc.setFontSize(14);
-  doc.text(`$${pago.monto.toLocaleString()}`, ancho / 2, y, { align: 'center' });
-
-  y += 20;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text('Gracias por su compra', ancho / 2, y, { align: 'center' });
-
-  const fechaArchivo = new Date().toISOString().slice(0, 10);
-  doc.save(`Factura_General_${pago.users.email}_${fechaArchivo}.pdf`);
-}
-
-
+  private async presentToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'bottom'
+    });
+    await toast.present();
+  }
 }

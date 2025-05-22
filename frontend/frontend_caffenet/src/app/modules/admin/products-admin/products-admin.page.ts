@@ -16,7 +16,7 @@ import { AuthAdminService } from 'src/app/common/services/authAdminService';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, BottomBarAdminComponent]
 })
-export class ProductsAdminPage implements OnInit {
+export class ProductsAdminPage {
   productos: Producto[] = [];
   nuevoProducto: Producto = {
     nombre: '',
@@ -32,7 +32,7 @@ export class ProductsAdminPage implements OnInit {
 
   constructor(private productoService: ProductoService, private authAdminService: AuthAdminService) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.authAdminService.requireLogin(); // Verifica si el usuario está logueado
     this.cargarProductos();
   }
