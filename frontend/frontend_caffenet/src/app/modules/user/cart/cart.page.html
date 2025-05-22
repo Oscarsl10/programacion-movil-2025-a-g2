@@ -46,7 +46,6 @@
   <ion-card *ngIf="carrito.length > 0">
     <ion-card-content>
       <h3>Total a pagar: ${{ total }}</h3>
-      <ion-button expand="full" color="danger" (click)="vaciarCarrito()">Vaciar carrito</ion-button>
       <ion-button expand="full" color="success" (click)="generarPedido()">Generar pedido</ion-button>
     </ion-card-content>
   </ion-card>

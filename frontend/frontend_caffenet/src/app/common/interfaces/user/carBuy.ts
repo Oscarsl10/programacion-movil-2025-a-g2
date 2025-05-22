@@ -3,7 +3,7 @@ import { Usuario } from "./usuario";
 export interface carBuy {
   id?: number; // ← hazlo opcional con ?
   fechaCreacion: string;
-  estado: 'ACTIVO' | 'COMPRADO' | 'RETIRADO' | 'SOLICITADO';
+  estado: 'ACTIVO' | 'COMPRADO' | 'RETIRADO' | 'SOLICITADO' | 'PENDIENTE';
   cantidad?: number;
   producto: {
     id: number;
