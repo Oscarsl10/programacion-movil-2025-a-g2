@@ -41,11 +41,11 @@
 
     <!-- ✅ Botón de exportar debajo del comprobante -->
     <div class="ion-text-center ion-margin-top">
-      <ion-button color="success" (click)="exportPDF()">
-        <ion-icon slot="start" name="download-outline"></ion-icon>
-        Descargar Comprobante
-      </ion-button>
-    </div>
+  <ion-button color="success" (click)="exportPDFAndOpen()">
+    <ion-icon slot="start" name="download-outline"></ion-icon>
+    Descargar y Abrir Comprobante
+  </ion-button>
+</div>
   </ng-container>
 
   <ng-template #mensaje>

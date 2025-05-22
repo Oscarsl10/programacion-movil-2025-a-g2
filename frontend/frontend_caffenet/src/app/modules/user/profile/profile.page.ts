@@ -17,7 +17,7 @@ import { AuthUserService } from 'src/app/common/services/authUserService';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule, BottomBarComponent]
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage {
   
   usuario: Usuario | null = null;
   errors: string[] = [];
@@ -33,7 +33,7 @@ export class ProfilePage implements OnInit {
 
   ) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.authUserService.requireLogin(); // Verifica si el usuario está logueado
     const email = sessionStorage.getItem('email');
     if (email) {

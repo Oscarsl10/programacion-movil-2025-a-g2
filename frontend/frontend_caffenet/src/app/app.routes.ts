@@ -97,10 +97,23 @@ export const routes: Routes = [
     path: 'invoice-admin',
     loadComponent: () => import('./modules/admin/invoice-admin/invoice-admin.page').then( m => m.InvoiceAdminPage),
     canActivate: [AuthAdminGuard]
-  },  {
-    path: 'detail-order',
-    loadComponent: () => import('./modules/user/detail-order/detail-order.page').then( m => m.DetailOrderPage)
   },
+  {
+    path: 'detail-order',
+    loadComponent: () => import('./modules/user/detail-order/detail-order.page').then( m => m.DetailOrderPage),
+    canActivate: [AuthUserGuard]
+  },
+  {
+    path: 'my-reservations',
+    loadComponent: () => import('./modules/user/my-reservations/my-reservations.page').then( m => m.MyReservationsPage),
+    canActivate: [AuthUserGuard]
+  },
+  {
+    path: 'payment-admin',
+    loadComponent: () => import('./modules/admin/payment-admin/payment-admin.page').then( m => m.PaymentAdminPage),
+    canActivate: [AuthAdminGuard]
+  },
+
 
 
 

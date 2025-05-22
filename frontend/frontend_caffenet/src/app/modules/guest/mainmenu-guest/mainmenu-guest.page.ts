@@ -16,14 +16,14 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, HttpClientModule, BottomBarGuestComponent, RouterLink],
 })
-export class MainmenuGuestPage implements OnInit {
+export class MainmenuGuestPage {
  cafes: Producto[] = [];
 cafesFiltrados: Producto[] = [];
   carBuyService: any;
 
 constructor(private productoService: ProductoService) {}
 
-ngOnInit() {
+ionViewWillEnter() {
   this.cargarProductos();
 }
 

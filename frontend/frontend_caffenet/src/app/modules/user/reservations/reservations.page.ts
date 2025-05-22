@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ToastController } from '@ionic/angular';
 import { BottomBarComponent } from "../../../shared/components/user/bottom-bar/bottom-bar.component";
 import { MesaService } from 'src/app/common/services/mesa.service';
 import { ReservaService } from 'src/app/common/services/reserva.service';
@@ -9,6 +9,7 @@ import { UsuarioService } from 'src/app/common/services/usuario.service';
 import { Reserva } from 'src/app/common/interfaces/admin/reserva';
 import { AuthUserService } from 'src/app/common/services/authUserService';
 import { Mesa } from 'src/app/common/interfaces/admin/mesa';
+
 @Component({
   selector: 'app-reservations',
   templateUrl: './reservations.page.html',
@@ -16,11 +17,10 @@ import { Mesa } from 'src/app/common/interfaces/admin/mesa';
   standalone: true,
   imports: [CommonModule, FormsModule, IonicModule, BottomBarComponent]
 })
-export class ReservationsPage implements OnInit {
+export class ReservationsPage {
   mesas: Mesa[] = [];
   usuario: any = null;
 
-  // Inicializar solo propiedades definidas en Reserva
   nuevaReserva: Partial<Reserva> = {
     fechaInicio: new Date(),
     fechaFin: new Date(),
@@ -35,10 +35,11 @@ export class ReservationsPage implements OnInit {
     private mesaService: MesaService,
     private reservaService: ReservaService,
     private usuarioService: UsuarioService,
-    private authUserService: AuthUserService
-  ) { }
+    private authUserService: AuthUserService,
+    private toastController: ToastController
+  ) {}
 
-  ngOnInit(): void {
+  ionViewWillEnter(): void {
     this.authUserService.requireLogin(); // Verifica si el usuario está logueado
     const userEmail = this.authUserService.getUserEmail();
     if (userEmail) {
@@ -54,9 +55,14 @@ export class ReservationsPage implements OnInit {
   }
 
   reservar(): void {
-    // Validación básica
-    if (!this.nuevaReserva.fechaInicio || !this.nuevaReserva.fechaFin || !this.nuevaReserva.mesa || !this.nuevaReserva.numero_personas || this.nuevaReserva.codigo === '') {
-      alert('Por favor, completa todos los campos requeridos.');
+    if (
+      !this.nuevaReserva.fechaInicio ||
+      !this.nuevaReserva.fechaFin ||
+      !this.nuevaReserva.mesa ||
+      !this.nuevaReserva.numero_personas ||
+      this.nuevaReserva.codigo === ''
+    ) {
+      this.showToast('Por favor, completa todos los campos requeridos.', 'warning');
       return;
     }
 
@@ -66,12 +72,12 @@ export class ReservationsPage implements OnInit {
 
     this.reservaService.createReserva(this.nuevaReserva as Reserva).subscribe({
       next: () => {
-        alert('Reserva creada exitosamente.');
+        this.showToast('Reserva creada exitosamente.', 'success');
         this.resetFormulario();
       },
       error: (err: any) => {
         console.error('Error al crear la reserva', err);
-        alert('Hubo un problema al crear la reserva.');
+        this.showToast('Hubo un problema al crear la reserva.', 'danger');
       }
     });
   }
@@ -86,5 +92,15 @@ export class ReservationsPage implements OnInit {
       users: undefined,
       estado: 'Ocupada'
     };
+  }
+
+  private async showToast(message: string, color: 'success' | 'danger' | 'warning' = 'success') {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2500,
+      position: 'bottom',
+      color
+    });
+    toast.present();
   }
 }

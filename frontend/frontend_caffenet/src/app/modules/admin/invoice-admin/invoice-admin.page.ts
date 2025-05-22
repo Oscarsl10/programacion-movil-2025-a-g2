@@ -15,7 +15,7 @@ import { AuthAdminService } from 'src/app/common/services/authAdminService';
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule, BottomBarAdminComponent]
 })
-export class InvoiceAdminPage implements OnInit {
+export class InvoiceAdminPage {
 
   comprobantes: Comprobante[] = [];
   loading = true;
@@ -23,7 +23,7 @@ export class InvoiceAdminPage implements OnInit {
 
   constructor(private compService: ComprobanteAdminService, private authService: AuthAdminService) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.authService.requireLogin(); // Verifica si el usuario está logueado
     this.compService.obtenerTodos().subscribe(resp => {
       if (resp.status && resp.data) {
