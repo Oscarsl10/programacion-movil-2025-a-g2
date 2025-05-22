@@ -57,6 +57,7 @@ export class CartPage {
             .filter(item =>
               item.estado !== 'COMPRADO' &&
               item.estado !== 'RETIRADO' &&
+              item.estado !== 'SOLICITADO' &&
               item.user &&
               item.user.email === email
             )
