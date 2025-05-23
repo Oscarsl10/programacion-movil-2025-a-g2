@@ -1,0 +1,171 @@
+// Variables de colores
+$primary-bg: #1e172d;
+$secondary-bg: #2d223c;
+$card-bg: #3b2d4a;
+$accent-color: #7a2239;
+$primary-text: #f4e1c1;
+$secondary-text: #b6a9c9;
+$gold-accent: #e0b354;
+
+// Estilos generales
+ion-content {
+  --background: linear-gradient(to bottom, #{$primary-bg}, #{$secondary-bg});
+  --padding-bottom: 70px;
+}
+
+// Header personalizado
+.custom-header {
+  --background: #{$primary-bg};
+  --color: #{$primary-text};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  
+  ion-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: $gold-accent;
+  }
+}
+
+// Lista de pagos
+ion-list {
+  background: transparent;
+  padding: 16px;
+}
+
+// Estilos para cada item de pago
+ion-item {
+  --background: #{$card-bg};
+  --color: #{$primary-text};
+  --border-color: transparent;
+  --inner-padding-top: 16px;
+  --inner-padding-bottom: 16px;
+  --inner-padding-start: 20px;
+  --inner-padding-end: 20px;
+  
+  margin-bottom: 16px;
+  border-radius: 16px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  // Líneas del item
+  &::part(native) {
+    border-radius: 16px;
+  }
+}
+
+// Labels dentro de los items
+ion-label {
+  margin: 0;
+  
+  h2 {
+    color: $gold-accent;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  
+  p {
+    color: $secondary-text;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// Estilos para destacar información importante
+.payment-info {
+  .amount {
+    color: $primary-text;
+    font-weight: 500;
+    
+    span {
+      color: $gold-accent;
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+  }
+  
+  .user {
+    color: $secondary-text;
+    font-weight: 500;
+  }
+}
+
+// Estilos responsive
+@media screen and (max-width: 480px) {
+  .custom-header ion-title {
+    font-size: 1.5rem;
+  }
+  
+  ion-item {
+    --inner-padding-start: 16px;
+    --inner-padding-end: 16px;
+    margin-bottom: 12px;
+  }
+  
+  ion-label {
+    h2 {
+      font-size: 1.1rem;
+    }
+    
+    p {
+      font-size: 0.85rem;
+    }
+  }
+}
+
+@media screen and (min-width: 768px) {
+  ion-content {
+    --padding-start: 20px;
+    --padding-end: 20px;
+  }
+  
+  ion-list {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  ion-item {
+    --inner-padding-start: 24px;
+    --inner-padding-end: 24px;
+  }
+}
+
+// Animaciones adicionales
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Aplicar animación a los items cuando cargan
+ion-item {
+  animation: fadeInUp 0.4s ease-out forwards;
+  
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: #{$i * 0.1}s;
+    }
+  }
+}

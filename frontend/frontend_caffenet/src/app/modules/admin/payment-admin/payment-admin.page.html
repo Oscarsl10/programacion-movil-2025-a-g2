@@ -1,0 +1,22 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-title>Pagos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let pago of pagos">
+      <ion-label>
+        <h2>{{ pago.metodo_Pago }}</h2>
+        <div class="payment-info">
+          <p class="amount">Monto: <span>${{ pago.monto }}</span></p>
+          <p class="user">Usuario: {{ pago.users?.full_name }}</p>
+          <p>Producto: {{ pago.detalle_pedido.producto?.nombre }}</p>
+          <p>Cantidad: {{ pago.detalle_pedido.carBuy?.cantidad }}</p>
+        </div>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<app-bottom-bar-admin></app-bottom-bar-admin>

@@ -1,0 +1,52 @@
+ion-content {
+    --background: #1e172d;
+  }
+  
+  ion-toolbar {
+    --background: #1e172d;
+    --color: #f4e1c1;
+  }
+  
+  ion-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  ion-searchbar {
+    --background: #2d223c;
+    --color: #f4e1c1;
+    --placeholder-color: #b8a8c6;
+    margin: 10px;
+    border-radius: 10px;
+  }
+  
+  ion-card {
+    background: #2d223c;
+    color: #f4e1c1;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  ion-card-title {
+    font-size: 1rem;
+    font-weight: bold;
+  }
+  
+  ion-card-subtitle {
+    color: #e0b354;
+  }
+  
+  .price-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+  }
+  ion-content {
+    --overflow: auto; 
+  }
+  
+
+  
+
+  

@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar class="toolbar-vino shadow-lg">
+     <ion-title class="titulo-pedido">Gestión de Mesas y Reservas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Formulario de Mesa -->
+  <h2>Crear / Editar Mesa</h2>
+  <form (ngSubmit)="guardarMesa()">
+    <ion-item>
+      <ion-label position="stacked">Número</ion-label>
+      <ion-input type="number" [(ngModel)]="nuevaMesa.numero" name="numero" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Capacidad</ion-label>
+      <ion-input type="number" [(ngModel)]="nuevaMesa.capacidad" name="capacidad" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Ubicación</ion-label>
+      <ion-input [(ngModel)]="nuevaMesa.ubicacion" name="ubicacion" required></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Precio por hora</ion-label>
+      <ion-input type="number" [(ngModel)]="nuevaMesa.precio" name="precio"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Estado</ion-label>
+      <ion-select [(ngModel)]="nuevaMesa.estado" name="estado">
+        <ion-select-option value="DISPONIBLE">Disponible</ion-select-option>
+        <ion-select-option value="OCUPADO">Ocupado</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-button expand="block" type="submit">
+      {{ editando ? 'Actualizar Mesa' : 'Crear Mesa' }}
+    </ion-button>
+    <ion-button expand="block" fill="clear" color="medium" (click)="resetFormulario()" *ngIf="editando">
+      Cancelar
+    </ion-button>
+  </form>
+
+  <!-- Listado de Mesas -->
+  <h2>Listado de Mesas</h2>
+  <ion-list>
+    <ion-item *ngFor="let mesa of mesas">
+      <ion-label>
+        <h3>Mesa #{{mesa.numero}} ({{mesa.estado}})</h3>
+        <p>Capacidad: {{mesa.capacidad}}, Ubicación: {{mesa.ubicacion}}</p>
+        <p>Precio por hora: {{mesa.precio | currency:'USD':'symbol'}}</p>
+      </ion-label>
+      <ion-button fill="clear" color="primary" (click)="editarMesa(mesa)">Editar</ion-button>
+      <ion-button fill="clear" color="danger" (click)="eliminarMesa(mesa.id!)">Eliminar</ion-button>
+      <ion-button fill="clear" color="success" (click)="ocuparMesa(mesa)" *ngIf="mesa.estado==='DISPONIBLE'">Ocupar</ion-button>
+      <ion-button fill="clear" color="warning" (click)="liberarMesa(mesa)" *ngIf="mesa.estado==='OCUPADO'">Liberar</ion-button>
+    </ion-item>
+  </ion-list>
+
+  <!-- Listado de Reservas -->
+  <h2>Reservas</h2>
+  <ion-list>
+    <ion-item *ngFor="let r of reservas">
+      <ion-label>
+        <h3>Reserva #{{r.id}} - Mesa {{r.mesa.numero}}</h3>
+        <p>Inicio: {{ r.fechaInicio | date:'short' }}, Fin: {{ r.fechaFin | date:'short' }}</p>
+        <p>Personas: {{ r.numero_personas }}, Estado: {{ r.estado }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<app-bottom-bar-admin></app-bottom-bar-admin>

@@ -1,0 +1,94 @@
+<ion-content [fullscreen]="true">
+  <div class="register-container">
+    <div class="back-button">
+      <ion-icon name="chevron-back"></ion-icon>
+    </div>
+
+    <div class="register-title">
+      <h1>Registro</h1>
+      <p class="subtitle">Datos personales</p>
+    </div>
+
+    <div *ngIf="errors.length > 0" class="alert alert-danger" role="alert">
+      <ul class="mb-0">
+        <li *ngFor="let error of errors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Mensaje de éxito -->
+    <div *ngIf="successMessage" class="alert alert-success" role="alert">
+      {{ successMessage }}
+    </div>
+
+    <!-- Formulario de registro con ngForm para manejo -->
+    <form (ngSubmit)="register()" #registerForm="ngForm">
+      <div class="register-form">
+
+
+        <!-- Campo Nombre completo -->
+        <div class="form-field">
+          <input type="text" placeholder="Nombre completo" [(ngModel)]="name" name="name" required
+            #nameField="ngModel" />
+          <div *ngIf="nameField.invalid && nameField.touched" class="error-message">
+            El nombre es obligatorio
+          </div>
+        </div>
+
+        <!-- Campo Correo Electrónico -->
+        <div class="form-field">
+          <input type="email" placeholder="Correo Electrónico" [(ngModel)]="email" name="email" required
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$" #emailField="ngModel" />
+          <div *ngIf="emailField.invalid && emailField.touched" class="error-message">
+            <div *ngIf="emailField.errors?.['required']" class="error-message">
+              El correo electrónico es obligatorio
+            </div>
+            <div *ngIf="emailField.errors?.['pattern']" class="error-message">
+              Ingrese un correo válido
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Campo Teléfono -->
+        <div class="form-field">
+          <input type="text" placeholder="Teléfono" [(ngModel)]="phone" name="phone" required pattern="^\d{7,10}$"
+            #phoneField="ngModel" [ngClass]="{'invalid-field': phoneField.invalid && phoneField.touched}" />
+          <div *ngIf="phoneField.invalid && phoneField.touched" class="error-message">
+            <div *ngIf="phoneField.errors?.['required']">
+              El teléfono es obligatorio.
+            </div>
+            <div *ngIf="phoneField.errors?.['pattern']">
+              El teléfono debe tener entre 7 y 10 dígitos numéricos.
+            </div>
+          </div>
+        </div>
+
+
+
+
+        <!-- Campo Contraseña -->
+        <div class="form-field">
+          <input type="password" placeholder="Contraseña" [(ngModel)]="password" name="password" required
+            #passwordField="ngModel" />
+          <div *ngIf="passwordField.invalid && passwordField.touched" class="error-message">
+            La contraseña es obligatoria
+          </div>
+        </div>
+
+        <!-- Botón de Registro -->
+        <div class="register-button">
+          <ion-button expand="block" type="submit" [disabled]="registerForm.invalid">
+            Registrarse
+          </ion-button>
+        </div>
+        <div class="login-options">
+          <div class="login-option" [routerLink]="['/login']">
+            <p>¿Ya tienes cuenta? <span class="link">Inicia Sesión</span></p>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</ion-content>

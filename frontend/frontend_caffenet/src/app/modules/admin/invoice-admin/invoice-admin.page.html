@@ -1,0 +1,29 @@
+<ion-header>
+  <ion-toolbar class="custom-header">
+    <ion-title>Facturas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+
+  <ng-container *ngIf="!loading && comprobantes.length > 0">
+    <ion-list>
+      <ion-item *ngFor="let c of comprobantes" lines="full">
+        <ion-label>
+          <h2>Comprobante #{{ c.id }}</h2>
+          <p>Reserva: {{ c.reserva.codigo }} – {{ c.users.email }}</p>
+          <p>Monto: {{ c.pagoReserva.monto | currency }} | {{ c.fecha_emision | date:'short' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-container>
+
+  <p *ngIf="!loading && errorMsg" class="ion-text-center ion-margin-top">{{ errorMsg }}</p>
+  <p *ngIf="!loading && !errorMsg && comprobantes.length === 0" class="ion-text-center ion-margin-top">
+    No se encontraron facturas.
+  </p>
+</ion-content>
+
+<app-bottom-bar-admin></app-bottom-bar-admin>

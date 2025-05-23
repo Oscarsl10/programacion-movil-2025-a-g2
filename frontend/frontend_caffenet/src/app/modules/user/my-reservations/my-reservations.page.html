@@ -1,0 +1,38 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <ion-title>Mis Reservas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="loading">
+    <ion-spinner></ion-spinner>
+    <p>Cargando reservas...</p>
+  </div>
+  
+  <!-- Empty state -->
+  <div class="status-message no-results" *ngIf="!loading && reservas.length === 0">
+    <p>No tienes reservas activas</p>
+  </div>
+  
+  <!-- Reservations list -->
+  <ion-list *ngIf="!loading && reservas.length > 0">
+    <ion-item *ngFor="let reserva of reservas">
+      <ion-label>
+        <h2>Mesa {{ reserva.mesa?.id }}</h2>
+        <div class="comprobante-info">
+          <p>Inicio: {{ reserva.fechaInicio | date: 'EEEE, MMMM d, y' }} {{ reserva.fechaInicio | date: 'h:mm a' }}</p>
+          <p>Fin: {{ reserva.fechaFin | date: 'EEEE, MMMM d, y' }} {{ reserva.fechaFin | date: 'h:mm a' }}</p>
+          <p>Personas: {{ reserva.numero_personas }}</p>
+          <p>Código: {{ reserva.codigo}}</p>
+          <p>Estado: {{ reserva.estado }}</p>
+        </div>
+      </ion-label>
+      <ion-button *ngIf="reserva.id" (click)="cancelarReserva(reserva.id)" fill="clear" slot="end">
+        Cancelar
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<app-bottom-bar></app-bottom-bar>
