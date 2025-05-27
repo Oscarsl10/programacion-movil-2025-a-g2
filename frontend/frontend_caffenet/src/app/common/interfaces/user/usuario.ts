@@ -4,4 +4,5 @@ export interface Usuario {
   full_name: string;
   password?: string; // opcional por seguridad
   telefono?: string;
+  direccion?: string;
 }

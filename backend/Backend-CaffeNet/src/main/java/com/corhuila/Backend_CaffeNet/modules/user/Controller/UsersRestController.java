@@ -75,6 +75,7 @@ public class UsersRestController {
 
         userActual.setFull_name(requestData.get("full_name"));
         userActual.setTelefono(requestData.get("telefono"));
+        userActual.setDireccion(requestData.get("direccion"));
 
         // Manejo de la actualización de la contraseña
         String oldPassword = requestData.get("oldPassword");

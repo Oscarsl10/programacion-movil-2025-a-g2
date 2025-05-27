@@ -18,6 +18,7 @@ export class RegisterPage {
   name = '';
   email = '';
   phone = '';
+  direccion = '';
   password = '';
   successMessage = '';
   errors: string[] = [];
@@ -58,6 +59,10 @@ private isValidPhone(phone: string): boolean {
       this.errors.push('El teléfono es obligatorio y debe tener entre 7 y 10 dígitos numéricos.');
     }
 
+    if (!this.direccion || this.direccion.trim().length < 5) {
+    this.errors.push('La dirección es obligatoria y debe tener al menos 5 caracteres.');
+    }
+
     if (!this.password || this.password.length < 6) {
       this.errors.push('La contraseña es obligatoria y debe tener al menos 6 caracteres.');
     }
@@ -68,6 +73,7 @@ private isValidPhone(phone: string): boolean {
       full_name: this.name,
       email: this.email,
       telefono: this.phone,
+      direccion: this.direccion,
       password: this.password
     };
 
