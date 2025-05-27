@@ -31,6 +31,10 @@ public class Users {
     @Column(length = 10)
     private String telefono;
 
+    @Column(length = 100, nullable = false)
+    private String direccion;
+
+
     public String getEmail() {
         return email;
     }
@@ -61,5 +65,13 @@ public class Users {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }

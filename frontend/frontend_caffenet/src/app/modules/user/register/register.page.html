@@ -65,6 +65,19 @@
         </div>
 
 
+        <!-- Campo Dirección -->
+        <div class="form-field">
+          <input type="text" placeholder="Dirección" [(ngModel)]="direccion" name="direccion" required minlength="5"
+            #direccionField="ngModel" [ngClass]="{'invalid-field': direccionField.invalid && direccionField.touched}" />
+          <div *ngIf="direccionField.invalid && direccionField.touched" class="error-message">
+            <div *ngIf="direccionField.errors?.['required']">
+              La dirección es obligatoria.
+            </div>
+            <div *ngIf="direccionField.errors?.['minlength']">
+              La dirección debe tener al menos 5 caracteres.
+            </div>
+          </div>
+        </div>
 
 
         <!-- Campo Contraseña -->

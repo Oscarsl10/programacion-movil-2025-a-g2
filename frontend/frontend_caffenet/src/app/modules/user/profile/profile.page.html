@@ -1,4 +1,3 @@
-
 <ion-header class="custom-header">
   <ion-toolbar>
     <ion-title> Mi Perfil</ion-title>
@@ -18,9 +17,14 @@
   </ion-item>
 
   <ion-item *ngIf="usuario" lines="none">
-      <ion-label position="floating">Email</ion-label>
-      <ion-input [(ngModel)]="usuario.email" name="email" readonly></ion-input>
-    </ion-item>
+    <ion-label position="floating">Dirección</ion-label>
+    <ion-input [(ngModel)]="usuario.direccion" [readonly]="!modoEdicion" type="text"></ion-input>
+  </ion-item>
+
+  <ion-item *ngIf="usuario" lines="none">
+    <ion-label position="floating">Email</ion-label>
+    <ion-input [(ngModel)]="usuario.email" name="email" readonly></ion-input>
+  </ion-item>
 
 
   <ion-item *ngIf="modoEdicion" lines="none">
@@ -43,11 +47,11 @@
 
   <ion-button *ngIf="!modoEdicion" (click)="activarEdicion()">Editar</ion-button>
   <ion-button *ngIf="modoEdicion" (click)="guardarCambios()">Guardar Cambios</ion-button>
-  
-  
+
+
   <div class="fixed-logout-button">
-  <ion-button expand="block" color="danger" (click)="cerrarSesion()">Cerrar sesión</ion-button>
-</div>
+    <ion-button expand="block" color="danger" (click)="cerrarSesion()">Cerrar sesión</ion-button>
+  </div>
 </ion-content>
 
 
